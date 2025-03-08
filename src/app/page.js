@@ -1,101 +1,108 @@
-import Image from "next/image";
+"use client";
+import { useState } from "react";
+import Link from "next/link";
+import { RiMenu3Line } from "react-icons/ri";
+import { FcGoogle } from "react-icons/fc";
+import { FaFacebook, FaApple } from "react-icons/fa";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.js
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  const [isOpen, setIsOpen] = useState(false);
+  const router = useRouter();
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+  return (
+    <div
+      className="min-h-screen bg-cover bg-center bg-no-repeat"
+      style={{ backgroundImage: "url('/home.jpg')" }}
+    >
+      <div className="bg-black/50 min-h-screen flex flex-col items-center text-black">
+        {/* Navbar */}
+        <nav className="w-full p-4 flex justify-between items-center fixed top-0 left-0 right-0 z-50 backdrop-blur-lg">
+          <Link href="/device-controller" className={`text-xl font-bold ${isOpen ? "text-gray-700" : "text-white"
+            }`}>S-HOME</Link>
+
+          {/* Desktop Menu */}
+          <div className="hidden md:flex space-x-6 text-white">
+            <Link href="/sign-up" className="hover:text-gray-300">
+              Sign Up
+            </Link>
+            <Link href="#" className="hover:text-gray-300">
+              About Us
+            </Link>
+            <Link href="#" className="hover:text-gray-300">
+              Help
+            </Link>
+          </div>
+
+          {/* Mobile Menu Button */}
+          <button
+            className={`md:hidden transition-transform duration-300 ${isOpen ? "rotate-180 text-gray-700" : "text-white"
+              }`}
+            onClick={() => setIsOpen(!isOpen)}
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+            <RiMenu3Line size={28} />
+          </button>
+        </nav>
+
+        <div
+          className={`fixed top-0 left-0 w-full bg-white shadow-md z-40 transition-transform duration-300 ease-in-out ${isOpen ? "translate-y-0 opacity-100" : "-translate-y-full opacity-0"
+            }`}
+          style={{ height: "40vh" }}
+        >
+          <div className="flex flex-col items-center justify-center h-full space-y-6 text-xl">
+
+            <Link href="/sign-up" className="hover:text-gray-300">
+              Sign Up
+            </Link>
+            <Link href="#" className="text-gray-700 hover:text-black">
+              Price
+            </Link>
+            <Link href="#" className="text-gray-700 hover:text-black">
+              Help
+            </Link>
+          </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+
+        {/*Section */}
+        <div className="flex flex-col items-center p-6 mt-20 text-center">
+          <h1 className="text-6xl font-bold text-white">Control your home</h1>
+          <p className="text-gray-300 mt-6 text-xl">
+            A smart house with advanced features that you can control via a website.
+          </p>
+          <p className="text-gray-300 text-xl">
+            Experience the future of home automation with cutting-edge technology that enhances convenience and security.
+          </p>
+        </div>
+        {/* Login Form */}
+        <div className="flex items-center justify-center mb-4 mx-4">
+          <div className="backdrop-blur-sm bg-white/10 p-8 rounded-lg shadow-lg lg:w-96 text-center">
+            <h2 className="text-2xl font-bold mb-2 text-white">Sign in with email</h2>
+
+            <form className="space-y-4">
+              <input
+                type="email"
+                placeholder="Email"
+                className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+              <input
+                type="password"
+                placeholder="Password"
+                className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+              <div className="text-right text-blue-500 text-sm cursor-pointer">Forgot password?</div>
+              <button className="w-full bg-black text-white p-3 rounded-lg hover:bg-gray-800"
+                onClick={() => router.push("/device-controller")}>Get Started</button>
+            </form>
+
+            <div className="my-6 text-gray-300">Or sign in with</div>
+            <div className="flex justify-center space-x-4">
+              <button className="p-3 border rounded-lg"><FcGoogle size={24} /></button>
+              <button className="p-3 border rounded-lg text-blue-600"><FaFacebook size={24} /></button>
+              <button className="p-3 border rounded-lg text-black"><FaApple size={24} /></button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
