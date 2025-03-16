@@ -8,7 +8,7 @@ const PORT = process.env.PORT || 5000;
 const deviceRoutes = require("./routes/deviceRoutes");
 const sensorRoutes = require("./routes/sensorRoutes");
 const sensorDataRoutes = require("./routes/sensorDataRoutes");
-
+const authRoutes = require("./routes/authRouters");
 
 
 // Cấu hình CORS
@@ -34,6 +34,7 @@ app.use((err, req, res, next) => {
 app.use("/api/devices", deviceRoutes);
 app.use("/api/sensors", sensorRoutes);
 app.use("/api/sensordata", sensorDataRoutes);
+app.use("/api/auth", authRoutes);
 // Khởi động server
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
