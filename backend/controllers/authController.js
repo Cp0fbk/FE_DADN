@@ -1,5 +1,7 @@
 require("dotenv").config();
-const User = require("../../models/User");
+const User = require("../models/user");
+const Device = require("../models/device");
+const Sensor = require("../models/sensor");
 const bycrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
@@ -18,6 +20,56 @@ const registerUser = async(req,res) => {
             email,
             password: hashedPassword
         })
+        const led = new Device({
+            name: "led",
+            type: "led",
+            owner_id: user._id,
+            status: "offline",
+            registered_at: Date.now()
+        });
+        const autoled = new Device({
+            name: "autoled",
+            type: "autoled",
+            owner_id: user._id,
+            status: "offline",
+            registered_at: Date.now()
+        });
+        const fan = new Device({
+            name: "fan",
+            type: "fan",
+            owner_id: user._id,
+            status: "offline",
+            registered_at: Date.now()
+        });
+        const motionSensor = new Sensor({
+            name: "motionSensor",
+            type: "motion",
+            owner_id: user._id,
+            status: "offline",
+            registered_at: Date.now()
+        });
+        const temperatureSensor = new Sensor({
+            name: "temperatureSensor",
+            type: "temperature",
+            owner_id: user._id,
+            status: "offline",
+            registered_at: Date.now()
+        });
+        const humiditySensor = new Sensor({
+            name: "humiditySensor",
+            type: "humidity",
+            owner_id: user._id,
+            status: "offline",
+            registered_at: Date.now()
+        });
+
+        await autoled.save();
+        await led.save();
+        await fan.save();
+        await motionSensor.save();
+        await temperatureSensor.save();
+        await humiditySensor.save();
+
         await user.save();
         return res.status(201).json({
         success: true,
@@ -51,12 +103,23 @@ const loginUser = async(req,res) => {
         process.env.JWT_SECRET,
         { expiresIn: "360m" }
     );
-    
+    const led = await Device.findOne({ owner_id: existingUser._id, type: 'led' });
+    const autoled = await Device.findOne({ owner_id: existingUser._id, type: 'autoled' });
+    const fan = await Device.findOne({ owner_id: existingUser._id, type: 'fan' });
+    const motionSensor = await Device.findOne({ owner_id: existingUser._id, type: 'motion' });
+    const temperatureSensor = await Sensor.findOne({ owner_id: existingUser._id, type: 'temperature' });
+    const humiditySensor = await Sensor.findOne({ owner_id: existingUser._id, type: 'humidity' });
     res.status(200).json({
         success: true,
         message: "Logged in successfully",
         data: {
-          accessToken,
+            accessToken,
+            led: led.status,
+            autoled: autoled.status,
+            fan: fan.current_value,
+            motionSensor: motionSensor.status,
+            temperatureSensor: temperatureSensor.value,
+            humiditySensor: humiditySensor.value
         },
       });
 }

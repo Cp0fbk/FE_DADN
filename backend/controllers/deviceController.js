@@ -84,7 +84,7 @@ const turnOFFAutoLed = async (req, res) => {
 const turnONMotionMode = async (req, res) => {
     try{
         const userId = req.user._id;
-        const motionMode = await Device.findOne({ owner_id: userId, type: 'motionmode' });
+        const motionMode = await Device.findOne({ owner_id: userId, type: 'motion' });
         if (!motionMode) {
             return res.status(404).json({ success: false, message: 'motionMode not found' });
         }
@@ -104,7 +104,7 @@ const turnONMotionMode = async (req, res) => {
 const turnOFFMotionMode = async (req, res) => {
     try{
         const userId = req.user._id;
-        const motionMode = await Device.findOne({ owner_id: userId, type: 'motionmode' });
+        const motionMode = await Device.findOne({ owner_id: userId, type: 'motion' });
         if (!motionMode) {
             return res.status(404).json({ success: false, message: 'motionMode not found' });
         }

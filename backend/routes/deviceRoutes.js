@@ -24,6 +24,6 @@ router.post('/turnONmotionMode', authenticateMiddleware, turnONMotionMode);
 router.post('/turnOFFmotionMode', authenticateMiddleware, turnOFFMotionMode);
 
 // Fan controller
-router.post('/fan', authenticateMiddleware, fanController);
+router.post('/fan/:value', authenticateMiddleware, fanController);
 
 module.exports = router;
