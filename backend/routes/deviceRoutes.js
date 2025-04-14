@@ -1,28 +1,29 @@
-const express = require("express");
-const Device = require("../models/device");
+const express = require('express');
 const router = express.Router();
+const {
+  turnONLed,
+  turnOFFLed,
+  turnONAutoLed,
+  turnOFFAutoLed,
+  turnONMotionMode,
+  turnOFFMotionMode,
+  fanController
+} = require('../controllers/deviceController');
+const { authenticateMiddleware } = require('../middleware/auth');
 
-// Thêm thiết bị mới
-router.post("/", async (req, res) => {
-  try {
-    const device = new Device(req.body);
-    await device.save();
-    res.status(201).json({ success: true, data: device });
-  } catch (error) {
-    res.status(500).json({ success: false, error: error.message });
-  }
-});
+// LED control
+router.post('/turnONled', authenticateMiddleware, turnONLed);
+router.post('/turnOFFled', authenticateMiddleware, turnOFFLed);
 
-// Lấy danh sách thiết bị
-router.get("/", async (req, res) => {
-  try {
-    const devices = await Device.find();
-    res.setHeader("Content-Type", "application/json");
-    res.send(JSON.stringify({ success: true, data: devices }, null, 2)); 
-  } catch (error) {
-    res.status(500).json({ success: false, error: error.message });
-  }
-});
+// Auto LED control
+router.post('/turnONautoLed', authenticateMiddleware, turnONAutoLed);
+router.post('/turnOFFautoLed', authenticateMiddleware, turnOFFAutoLed);
 
+// Motion mode control
+router.post('/turnONmotionMode', authenticateMiddleware, turnONMotionMode);
+router.post('/turnOFFmotionMode', authenticateMiddleware, turnOFFMotionMode);
+
+// Fan controller
+router.post('/fan', authenticateMiddleware, fanController);
 
 module.exports = router;

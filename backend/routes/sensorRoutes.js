@@ -1,26 +1,23 @@
-const express = require("express");
-const Sensor = require("../models/sensor");
+const express = require('express');
 const router = express.Router();
+const {
+  updateTempValue,
+  getTempValue,
+  updateHumiValue,
+  getHumiValue,
+  getALLTempValue,
+  getALLHumiValue
+} = require('../controllers/sensorController');
+const { authenticateMiddleware } = require('../middleware/auth');
 
-// Thêm sensor mới
-router.post("/", async (req, res) => {
-  try {
-    const sensor = new Sensor(req.body);
-    await sensor.save();
-    res.status(201).json({ success: true, data: sensor });
-  } catch (error) {
-    res.status(500).json({ success: false, error: error.message });
-  }
-});
+// Temperature sensor routes
+router.post('/temp/update', authenticateMiddleware, updateTempValue);
+router.get('/temp', authenticateMiddleware, getTempValue);
+router.get('/temp/all', authenticateMiddleware, getALLTempValue);
 
-// Lấy danh sách sensor
-router.get("/", async (req, res) => {
-  try {
-    const sensors = await Sensor.find();
-    res.json({ success: true, data: sensors });
-  } catch (error) {
-    res.status(500).json({ success: false, error: error.message });
-  }
-});
+// Humidity sensor routes
+router.post('/humi/update', authenticateMiddleware, updateHumiValue);
+router.get('/humi', authenticateMiddleware, getHumiValue);
+router.get('/humi/all', authenticateMiddleware, getALLHumiValue);
 
 module.exports = router;

@@ -1,21 +1,36 @@
-const jwt = require("jsonwebtoken")
+const jwt = require('jsonwebtoken');
+require('dotenv').config();
 
-
-module.exports = function (req, res, next){
-    const token = req.header("Authorization");
-
-    if(!token){
-        return res.status(401).json({ message: "Access Denied"});
+const verifyToken = (token, secretKey) => {
+    try {
+        return jwt.verify(token, secretKey);
+    } catch (error) {
+        console.log("JWT Verification Error: ", error); // In lỗi JWT
+        return null; // Trả về null nếu token không hợp lệ hoặc hết hạn
     }
-
-    try{
-        const verified = jwt.verify(token.split(" ")[1], process.env.JWT_SECRET);
-        req.user = verified;
-        next();
-    } catch(err){
-        res.status(400).json({message:"Invalid Token"});
-    }
-
 };
 
+const authenticateMiddleware = (req, res, next) => {
+    const authHeader = req.headers.authorization;
+    if (!authHeader) {
+        return res.status(401).json({
+            success: false,
+            message: 'User is not authenticated'
+        });
+    }
 
+    const token = authHeader.split(' ')[1];
+    const payload = verifyToken(token, process.env.JWT_SECRET);
+    if (!payload) {
+        return res.status(401).json({
+            success: false,
+            message: 'Invalid or expired token'
+        });
+    }
+    req.user = payload;
+    next();
+};
+module.exports = {
+    authenticateMiddleware,
+    verifyToken
+}
