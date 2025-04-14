@@ -7,7 +7,7 @@ const DeviceSchema = new mongoose.Schema({
   status: { type: String, enum: ["online", "offline"], default: "offline" },
   registered_at: { type: Date, default: Date.now },
   location: { type: Object, default: {} },
-  current_value: {type: String, defaul: "0.0"}
+  current_value: {type: String, default: "0.0"}
 });
 
 module.exports = mongoose.model("Device", DeviceSchema);

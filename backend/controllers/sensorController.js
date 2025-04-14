@@ -5,7 +5,7 @@ const Sensor = require('../models/sensor')
 const updateTempValue = async (req,res) => {
     try{
         const userId = req.user._id;
-        const item = await Sensor.findOne({ owner_id: userId, type: 'temp' });
+        const item = await Sensor.findOne({ owner_id: userId, type: 'temperature' });
         if (!item) {
             return res.status(404).json({ success: false, message: 'Temp not found' });
         }
@@ -17,7 +17,7 @@ const updateTempValue = async (req,res) => {
         await item.save();
 
         const blynkUrl = process.env.TEMPERATURE_UPDATE + value;
-        await axios.post(blynkUrl);
+        await axios.get(blynkUrl);
         res.status(200).json({
             success: true,
             messafe: "updateTempValue success"
@@ -30,15 +30,16 @@ const updateTempValue = async (req,res) => {
 const getTempValue = async (req,res) => {
     try{
         const userId = req.user._id;
-        const item = await Sensor.findOne({ owner_id: userId, type: 'temp' });
+        const item = await Sensor.findOne({ owner_id: userId, type: 'temperature' });
         if (!item) {
             return res.status(404).json({ success: false, message: 'Temp not found' });
         }
         const blynkUrl = process.env.TEMPERATURE_GET;
         const tempValue = await axios.get(blynkUrl);
+        console.log(tempValue.data);
         res.status(200).json({
             success: true,
-            value: tempValue
+            value: tempValue.data
         })
     }catch(error)
     {
@@ -48,7 +49,7 @@ const getTempValue = async (req,res) => {
 const updateHumiValue = async (req,res) => {
     try{
         const userId = req.user._id;
-        const item = await Sensor.findOne({ owner_id: userId, type: 'humi' });
+        const item = await Sensor.findOne({ owner_id: userId, type: 'humidity' });
         if (!item) {
             return res.status(404).json({ success: false, message: 'Humi not found' });
         }
@@ -60,7 +61,7 @@ const updateHumiValue = async (req,res) => {
         await item.save();
 
         const blynkUrl = process.env.HUMI_UPDATE + value;
-        await axios.post(blynkUrl);
+        await axios.get(blynkUrl);
         res.status(200).json({
             success: true,
             messafe: "updateHumiValue success"
@@ -73,7 +74,7 @@ const updateHumiValue = async (req,res) => {
 const getHumiValue = async (req,res) => {
     try{
         const userId = req.user._id;
-        const item = await Sensor.findOne({ owner_id: userId, type: 'humi' });
+        const item = await Sensor.findOne({ owner_id: userId, type: 'humidity' });
         if (!item) {
             return res.status(404).json({ success: false, message: 'Humi not found' });
         }
@@ -81,7 +82,7 @@ const getHumiValue = async (req,res) => {
         const humiValue = await axios.get(blynkUrl);
         res.status(200).json({
             success: true,
-            value: humiValue
+            value: humiValue.data
         })
     }catch(error)
     {
@@ -91,13 +92,13 @@ const getHumiValue = async (req,res) => {
 const getALLTempValue = async (req,res) => {
     try{
         const userId = req.user._id;
-        const item = await Sensor.findOne({ owner_id: userId, type: 'temp' });
+        const item = await Sensor.findOne({ owner_id: userId, type: 'temperature' });
         if (!item) {
             return res.status(404).json({ success: false, message: 'Temp not found' });
         }
         res.status(200).json({
             success: true,
-            value: item.value
+            values: item.value
         })
     }catch(error)
     {
@@ -107,7 +108,7 @@ const getALLTempValue = async (req,res) => {
 const getALLHumiValue = async (req,res) => {
     try{
         const userId = req.user._id;
-        const item = await Sensor.findOne({ owner_id: userId, type: 'humi' });
+        const item = await Sensor.findOne({ owner_id: userId, type: 'humidity' });
         if (!item) {
             return res.status(404).json({ success: false, message: 'Humi not found' });
         }

@@ -15,6 +15,9 @@ const registerUser = async(req,res) => {
     }
     const hashedPassword = await bycrypt.hash(password, 12);
     try{
+        console.log("username: ", username);
+        console.log("email: ", email);
+
         const user = new User({
             username,
             email,
@@ -41,7 +44,7 @@ const registerUser = async(req,res) => {
             status: "offline",
             registered_at: Date.now()
         });
-        const motionSensor = new Sensor({
+        const motionSensor = new Device({
             name: "motionSensor",
             type: "motion",
             owner_id: user._id,
@@ -52,14 +55,12 @@ const registerUser = async(req,res) => {
             name: "temperatureSensor",
             type: "temperature",
             owner_id: user._id,
-            status: "offline",
             registered_at: Date.now()
         });
         const humiditySensor = new Sensor({
             name: "humiditySensor",
             type: "humidity",
             owner_id: user._id,
-            status: "offline",
             registered_at: Date.now()
         });
 
@@ -72,8 +73,8 @@ const registerUser = async(req,res) => {
 
         await user.save();
         return res.status(201).json({
-        success: true,
-        message: "User created successfully",
+            success: true,
+            message: "User created successfully",
         });
     }catch (error) {
         res.status(500).json({ message: error.message });
@@ -82,9 +83,7 @@ const registerUser = async(req,res) => {
 const loginUser = async(req,res) => {
     const { username,password} = req.body;
     const existingUser = await User.findOne({ username });
-    if (existingUser) {
-        return res.status(400).json({ message: "User already exists" });
-    }
+
     if (
         !existingUser ||
         !(await bycrypt.compare(password, existingUser.password))
