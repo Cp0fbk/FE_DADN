@@ -20,7 +20,7 @@ const updateTempValue = async (req,res) => {
         await axios.get(blynkUrl);
         res.status(200).json({
             success: true,
-            messafe: "updateTempValue success"
+            message: "updateTempValue success"
         })
     }catch(error)
     {
