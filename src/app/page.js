@@ -5,10 +5,30 @@ import { RiMenu3Line } from "react-icons/ri";
 import { FcGoogle } from "react-icons/fc";
 import { FaFacebook, FaApple } from "react-icons/fa";
 import { useRouter } from "next/navigation";
+import axios from "axios";
+import toast from "react-hot-toast";
 
 export default function Home() {
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await axios.post("http://localhost:5000/api/auth/login", {
+        username,
+        password,
+      });
+      localStorage.setItem("token", res.data.data.accessToken);
+      toast.success("Login successful!");
+      router.push("/device-controller");
+    } catch (error) {
+      toast.error("Login failed! Please check your credentials.");
+      console.log(error.message);
+    }
+  };
 
   return (
     <div
@@ -18,8 +38,8 @@ export default function Home() {
       <div className="bg-black/50 min-h-screen flex flex-col items-center text-black">
         {/* Navbar */}
         <nav className="w-full p-4 flex justify-between items-center fixed top-0 left-0 right-0 z-50 backdrop-blur-lg">
-          <Link href="/device-controller" className={`text-xl font-bold ${isOpen ? "text-gray-700" : "text-white"
-            }`}>S-HOME</Link>
+          <div className={`text-xl font-bold ${isOpen ? "text-gray-700" : "text-white"
+            }`}>S-HOME</div>
 
           {/* Desktop Menu */}
           <div className="hidden md:flex space-x-6 text-white">
@@ -76,22 +96,28 @@ export default function Home() {
         {/* Login Form */}
         <div className="flex items-center justify-center mb-4 mx-4">
           <div className="backdrop-blur-sm bg-white/10 p-8 rounded-lg shadow-lg lg:w-96 text-center">
-            <h2 className="text-2xl font-bold mb-2 text-white">Sign in with email</h2>
+            <h2 className="text-2xl font-bold mb-2 text-white">Sign in with username</h2>
 
-            <form className="space-y-4">
+            <form className="space-y-4" onSubmit={handleLogin}>
               <input
-                type="email"
-                placeholder="Email"
-                className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                type="text"
+                placeholder="Username"
+                className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                required
               />
               <input
                 type="password"
                 placeholder="Password"
-                className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
               />
               <div className="text-right text-blue-500 text-sm cursor-pointer">Forgot password?</div>
               <button className="w-full bg-black text-white p-3 rounded-lg hover:bg-gray-800"
-                onClick={() => router.push("/device-controller")}>Get Started</button>
+                type="submit" >Get Started</button>
             </form>
 
             <div className="my-6 text-gray-300">Or sign in with</div>

@@ -24,7 +24,7 @@ const turnONLed = async (req, res) => {
         }
         res.status(200).json({
             success: true,
-            messafe: "turnONLed success"
+            message: "turnONLed success"
         })
     }catch(error)
     {
@@ -44,7 +44,7 @@ const turnOFFLed = async (req, res) => {
         await axios.get(blynkUrl);
         res.status(200).json({
             success: true,
-            messafe: "turnOFFLed success"
+            message: "turnOFFLed success"
         })
     }catch(error)
     {
@@ -64,7 +64,7 @@ const turnONAutoLed = async (req, res) => {
         await axios.get(blynkUrl);
         res.status(200).json({
             success: true,
-            messafe: "turnONAutoLed success"
+            message: "turnONAutoLed success"
         })
     }catch(error)
     {
@@ -84,7 +84,7 @@ const turnOFFAutoLed = async (req, res) => {
         await axios.get(blynkUrl);
         res.status(200).json({
             success: true,
-            messafe: "turnOFFAutoLed success"
+            message: "turnOFFAutoLed success"
         })
     }catch(error)
     {
@@ -104,7 +104,7 @@ const turnONMotionMode = async (req, res) => {
         await axios.get(blynkUrl);
         res.status(200).json({
             success: true,
-            messafe: "turnONMotionMode success"
+            message: "turnONMotionMode success"
         })
     }catch(error)
     {
@@ -124,7 +124,7 @@ const turnOFFMotionMode = async (req, res) => {
         await axios.get(blynkUrl);
         res.status(200).json({
             success: true,
-            messafe: "turnOFFMotionMode success"
+            message: "turnOFFMotionMode success"
         })
     }catch(error)
     {
@@ -150,7 +150,7 @@ const fanController = async (req,res) => {
         await axios.get(blynkUrl);
         res.status(200).json({
             success: true,
-            messafe: "fan success"
+            message: "fan success"
         })
     }catch(error)
     {
