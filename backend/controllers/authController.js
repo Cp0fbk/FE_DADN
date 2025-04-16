@@ -1,4 +1,5 @@
 require("dotenv").config();
+const axios = require("axios");
 const User = require("../models/user");
 const Device = require("../models/device");
 const Sensor = require("../models/sensor");
@@ -110,15 +111,23 @@ const loginUser = async(req,res) => {
     const humiditySensor = await Sensor.findOne({ owner_id: existingUser._id, type: 'humidity' });
     try {
         await axios.get(process.env.LED + led.current_value);
-        await axios.get(process.env.AUTOLED + autoled.status);
-        await axios.get(process.env.MOTIONMODE + motionSensor.status);
+        if (autoled.status === "online") {
+            await axios.get(process.env.AUTOLED + "1");
+        }else {
+            await axios.get(process.env.AUTOLED + "0");
+        }
+        if (motionSensor.status === "online") {
+            await axios.get(process.env.MOTIONMODE + "1");
+        } else {
+            await axios.get(process.env.MOTIONMODE + "0");
+        }
         await axios.get(process.env.FAN + fan.current_value);
-        await axios.get(process.env.TEMPERATURE_UPDATE + temperatureSensor.value);
-        await axios.get(process.env.HUMI_UPDATE + humiditySensor.value);
+        await axios.get(process.env.TEMPERATURE_UPDATE + temperatureSensor.value[temperatureSensor.value.length - 1].value);
+        await axios.get(process.env.HUMI_UPDATE + humiditySensor.value[humiditySensor.value.length - 1].value);
         console.log("init blynk after login success"); 
     } catch (err) {
         console.error("Error calling Blynk:", err.message);
-        return res.status(500).json({ success: false, message: "Failed to trigger Blynk LED" });
+        return res.status(500).json({ success: false, message: "Failed to trigger Blynk" });
     }
     res.status(200).json({
         success: true,
