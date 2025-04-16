@@ -197,6 +197,76 @@ const fanController = async (req,res) => {
         res.status(500).json({ success: false, message: error.message });
     }
 }
+
+const getAllLed = async (req,res) => {
+    console.log("getAllLed")
+    try{
+        const userId = req.user._id;
+        const led = await Device.find({ owner_id: userId, type: 'led' });
+        if (!led) {
+            return res.status(404).json({ success: false, message: 'LED not found' });
+        }
+        res.status(200).json({
+            success: true,
+            data: led[0].history
+        })
+    }catch(error)
+    {
+        res.status(500).json({ success: false, message: error.message });
+    }
+}
+const getAllAutoLed = async (req,res) => {
+    console.log("getAllAutoLed")
+    try{
+        const userId = req.user._id;
+        const array = await Device.find({ owner_id: userId, type: 'autoled' });
+        console.log(array[0].history)
+        if (!array) {
+            return res.status(404).json({ success: false, message: 'AUTOLED not found' });
+        }
+        res.status(200).json({
+            success: true,
+            data: array[0].history
+        })
+    }catch(error)
+    {
+        res.status(500).json({ success: false, message: error.message });
+    }
+}
+const getAllMotionMode = async (req,res) => {
+    console.log("getAllMotionMode")
+    try{
+        const userId = req.user._id;
+        const array = await Device.find({ owner_id: userId, type: 'autoled' });
+        if (!array) {
+            return res.status(404).json({ success: false, message: 'MotionMode not found' });
+        }
+        res.status(200).json({
+            success: true,
+            data: array[0].history
+        })
+    }catch(error)
+    {
+        res.status(500).json({ success: false, message: error.message });
+    }
+}
+const getAllFan = async (req,res) => {
+    console.log("getAllFan")
+    try{
+        const userId = req.user._id;
+        const array = await Device.find({ owner_id: userId, type: 'fan' });
+        if (!array) {
+            return res.status(404).json({ success: false, message: 'Fan not found' });
+        }
+        res.status(200).json({
+            success: true,
+            data: array[0].history
+        })
+    }catch(error)
+    {
+        res.status(500).json({ success: false, message: error.message });
+    }
+}
 module.exports = {
     turnONLed_medium,
     turnONLed_max,
@@ -205,5 +275,9 @@ module.exports = {
     turnOFFAutoLed,
     turnONMotionMode,
     turnOFFMotionMode,
-    fanController
+    fanController,
+    getAllLed,
+    getAllAutoLed,
+    getAllMotionMode,
+    getAllFan
 }
