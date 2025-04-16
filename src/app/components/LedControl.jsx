@@ -1,7 +1,9 @@
+"use client";
 import React, { useEffect } from "react";
 import axios from "axios";
 
 const LedControl = ({ brightness, setBrightness, isOn, autoMode, setAutoMode, token }) => {
+  
   const toggleLed = async () => {
     const url = isOn
       ? "http://localhost:5000/api/devices/turnONled"
@@ -17,11 +19,36 @@ const LedControl = ({ brightness, setBrightness, isOn, autoMode, setAutoMode, to
 
       if (response.status === 200) {
         console.log(response.data); 
+        // toast.success("Successful change");
       } else {
         console.error("Error:", response.data);
       }
     } catch (error) {
       console.error("Error in LED API call:", error);
+    }
+  };
+
+  const toggleAutoLed = async () => {
+    const url = autoMode
+      ? "http://localhost:5000/api/devices/turnONautoLed"
+      : "http://localhost:5000/api/devices/turnOFFautoLed";
+
+    try {
+      const response = await axios.post(url, {}, {
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (response.status === 200) {
+        console.log(response.data); 
+        // toast.success("Successful change");
+      } else {
+        console.error("Error:", response.data);
+      }
+    } catch (error) {
+      console.error("Error in Auto LED API call:", error);
     }
   };
 
@@ -32,6 +59,14 @@ const LedControl = ({ brightness, setBrightness, isOn, autoMode, setAutoMode, to
       toggleLed(); 
     }
   }, [isOn]);
+
+  useEffect(() => {
+    if (autoMode) {
+      toggleAutoLed(); 
+    } else {
+      toggleAutoLed();
+    }
+  }, [autoMode]);
 
   return (
     <div>

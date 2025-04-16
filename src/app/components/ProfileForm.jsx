@@ -1,7 +1,42 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { FaPen } from "react-icons/fa";
+import axios from "axios";
 
-export default function ProfileForm({ user, handleChange }) {
+export default function ProfileForm() {
+  const [user, setUser] = useState({
+    username: "",
+    email: "",
+    password: ""
+  });
+  const [isEditingPassword, setIsEditingPassword] = useState(false);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token"); 
+
+    if (token) {
+      axios
+        .get("http://localhost:5000/api/auth/profile", {
+          headers: {
+            Authorization: `Bearer ${token}` 
+          }
+        })
+        .then((response) => {
+          setUser({
+            username: response.data.user.username,
+            email: response.data.user.email,
+            password: "" 
+          });
+        })
+        .catch((error) => {
+          console.error("There was an error fetching the user data!", error);
+        });
+    }
+  }, []);
+
+  const handleEditClick = () => {
+    setIsEditingPassword(true);
+  };
+
   return (
     <div className="bg-gray-800 p-4 rounded-lg shadow-lg">
       <h2 className="flex items-center gap-2 text-xl font-bold mb-4">
@@ -11,48 +46,54 @@ export default function ProfileForm({ user, handleChange }) {
         <img src="/avatar.jpg" alt="Avatar" className="w-full h-full object-cover" />
       </div>
       <form className="space-y-3">
-        <div className="flex gap-4">
-          <div className="w-1/2">
-            <label className="block text-gray-400 mb-1">Name</label>
-            <input
-              type="text"
-              name="name"
-              value={user.name}
-              onChange={handleChange}
-              className="w-full p-2 bg-gray-700 rounded-md border border-gray-600"
-            />
-          </div>
-          <div className="w-1/2">
-            <label className="block text-gray-400 mb-1">Full Name</label>
-            <input
-              type="text"
-              name="fullName"
-              value={user.fullName}
-              onChange={handleChange}
-              className="w-full p-2 bg-gray-700 rounded-md border border-gray-600"
-            />
-          </div>
+        {/* Username field */}
+        <div>
+          <label className="block text-gray-400 mb-1">Username</label>
+          <input
+            type="text"
+            name="username"
+            value={user.username}
+            // onChange={handleChange}
+            className="w-full p-2 bg-gray-700 rounded-md border border-gray-600"
+            disabled
+          />
         </div>
+
+        {/* Email field */}
         <div>
           <label className="block text-gray-400 mb-1">Email</label>
           <input
             type="email"
             name="email"
             value={user.email}
-            onChange={handleChange}
+            // onChange={handleChange}
             className="w-full p-2 bg-gray-700 rounded-md border border-gray-600"
+            disabled
+          />
+        </div>
+
+        {/* Password Field */}
+        <div className="flex items-center justify-between">
+          <label className="text-gray-400 mb-1">Password</label>
+          <FaPen
+            onClick={handleEditClick}
+            className={`cursor-pointer ${isEditingPassword ? "text-blue-500" : "text-gray-400"}`}
           />
         </div>
         <div>
-          <label className="block text-gray-400 mb-1">Phone Number</label>
-          <input
-            type="text"
-            name="phone"
-            value={user.phone}
-            onChange={handleChange}
-            className="w-full p-2 bg-gray-700 rounded-md border border-gray-600"
-          />
+          <div className="relative">
+            <input
+              type={isEditingPassword ? "password" : "text"}
+              name="password"
+              value={user.password}
+              // onChange={handleChange}
+              disabled={!isEditingPassword}
+              placeholder="*******"
+              className="w-full p-2 bg-gray-700 rounded-md border border-gray-600 pr-10"
+            />
+          </div>
         </div>
+
         <button className="w-full bg-blue-500 p-2 rounded-md hover:bg-blue-600">
           Save Changes
         </button>
