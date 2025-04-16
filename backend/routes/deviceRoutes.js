@@ -9,6 +9,10 @@ const {
   turnONMotionMode,
   turnOFFMotionMode,
   fanController,
+  getAllLed,
+  getAllAutoLed,
+  getAllMotionMode,
+  getAllFan
 } = require('../controllers/deviceController');
 const { authenticateMiddleware } = require('../middleware/auth');
 
@@ -17,6 +21,11 @@ router.post('/turnONled_high', authenticateMiddleware, turnONLed_max);
 router.post('/turnONled_medium', authenticateMiddleware, turnONLed_medium);
 router.post('/turnOFFled', authenticateMiddleware, turnOFFLed);
 
+// History control
+router.get('/getAllHistoryLed', authenticateMiddleware, getAllLed);
+router.get('/getAllHistoryAutoLed', authenticateMiddleware, getAllAutoLed); 
+router.get('/getAllHistoryMotionMode', authenticateMiddleware, getAllMotionMode); 
+router.get('/getAllHistoryFan', authenticateMiddleware, getAllFan);
 
 // Auto LED control
 router.post('/turnONautoLed', authenticateMiddleware, turnONAutoLed);
