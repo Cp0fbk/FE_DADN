@@ -8,8 +8,8 @@ const PORT = process.env.PORT || 5000;
 const deviceRoutes = require("./routes/deviceRoutes");
 const sensorRoutes = require("./routes/sensorRoutes");
 const authRoutes = require("./routes/authRoutes");
-
-
+const scheduleRoutes = require("./routes/scheduleRoutes");
+const handleSchedule_ = require('./utils/handleSchedule');
 // Cấu hình CORS
 app.use(
     cors({
@@ -28,11 +28,12 @@ app.use((err, req, res, next) => {
         error: 'Something went wrong'
     });
 });
-
+handleSchedule_();
 // Routes xử lý request
 app.use("/api/devices", deviceRoutes);
 app.use("/api/sensors", sensorRoutes);
 app.use("/api/auth", authRoutes);
+app.use("/api/schedules", scheduleRoutes);
 // Khởi động server
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);

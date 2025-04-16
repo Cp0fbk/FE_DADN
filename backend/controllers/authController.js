@@ -108,12 +108,24 @@ const loginUser = async(req,res) => {
     const motionSensor = await Device.findOne({ owner_id: existingUser._id, type: 'motion' });
     const temperatureSensor = await Sensor.findOne({ owner_id: existingUser._id, type: 'temperature' });
     const humiditySensor = await Sensor.findOne({ owner_id: existingUser._id, type: 'humidity' });
+    try {
+        await axios.get(process.env.LED + led.current_value);
+        await axios.get(process.env.AUTOLED + autoled.status);
+        await axios.get(process.env.MOTIONMODE + motionSensor.status);
+        await axios.get(process.env.FAN + fan.current_value);
+        await axios.get(process.env.TEMPERATURE_UPDATE + temperatureSensor.value);
+        await axios.get(process.env.HUMI_UPDATE + humiditySensor.value);
+        console.log("init blynk after login success"); 
+    } catch (err) {
+        console.error("Error calling Blynk:", err.message);
+        return res.status(500).json({ success: false, message: "Failed to trigger Blynk LED" });
+    }
     res.status(200).json({
         success: true,
         message: "Logged in successfully",
         data: {
             accessToken,
-            led: led.status,
+            led: led.current_value,
             autoled: autoled.status,
             fan: fan.current_value,
             motionSensor: motionSensor.status,

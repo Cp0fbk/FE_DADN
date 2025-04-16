@@ -1,7 +1,8 @@
 const Device = require('../models/device');
 require('dotenv').config();
 const axios = require('axios');
-const turnONLed = async (req, res) => {
+
+const turnONLed_medium = async (req, res) => {
     console.log("turnONLed")
     try{
         const userId = req.user._id;
@@ -11,9 +12,41 @@ const turnONLed = async (req, res) => {
         if (!led) {
             return res.status(404).json({ success: false, message: 'LED not found' });
         }
-        led.status = "online";
+        led.current_value = "50";
+        led.history.push({ value: "50", timestamp: new Date() });
         await led.save();
-        const blynkUrl = process.env.LED + "1";
+        const blynkUrl = process.env.LED + "50";
+        console.log("blynkUrl", blynkUrl)
+        try {
+            await axios.get(blynkUrl);
+            console.log("done"); 
+        } catch (err) {
+            console.error("Error calling Blynk:", err.message);
+            return res.status(500).json({ success: false, message: "Failed to trigger Blynk LED" });
+        }
+        res.status(200).json({
+            success: true,
+            message: "turnONLed success"
+        })
+    }catch(error)
+    {
+        res.status(500).json({ success: false, message: error.message });
+    }
+}
+const turnONLed_max = async (req, res) => {
+    console.log("turnONLed")
+    try{
+        const userId = req.user._id;
+        console.log(userId)
+        const led = await Device.findOne({ owner_id: userId, type: 'led' });
+        console.log(led)
+        if (!led) {
+            return res.status(404).json({ success: false, message: 'LED not found' });
+        }
+        led.current_value = "99";
+        led.history.push({ value: "99", timestamp: new Date() });
+        await led.save();
+        const blynkUrl = process.env.LED + "99";
         console.log("blynkUrl", blynkUrl)
         try {
             await axios.get(blynkUrl);
@@ -38,7 +71,8 @@ const turnOFFLed = async (req, res) => {
         if (!led) {
             return res.status(404).json({ success: false, message: 'LED not found' });
         }
-        led.status = "offline";
+        led.current_value = "0";
+        led.history.push({ value: "0", timestamp: new Date() });
         led.save();
         const blynkUrl = process.env.LED + "0";
         await axios.get(blynkUrl);
@@ -58,6 +92,7 @@ const turnONAutoLed = async (req, res) => {
         if (!autoled) {
             return res.status(404).json({ success: false, message: 'AUTOLED not found' });
         }
+        autoled.history.push({ value: "on", timestamp: new Date() });
         autoled.status = "online";
         autoled.save();
         const blynkUrl = process.env.AUTOLED + "1";
@@ -78,6 +113,7 @@ const turnOFFAutoLed = async (req, res) => {
         if (!autoled) {
             return res.status(404).json({ success: false, message: 'AUTOLED not found' });
         }
+        autoled.history.push({ value: "off", timestamp: new Date() });
         autoled.status = "offline";
         autoled.save();
         const blynkUrl = process.env.AUTOLED + "0";
@@ -98,6 +134,7 @@ const turnONMotionMode = async (req, res) => {
         if (!motionMode) {
             return res.status(404).json({ success: false, message: 'motionMode not found' });
         }
+        motionMode.history.push({ value: "on", timestamp: new Date() });
         motionMode.status = "online";
         motionMode.save();
         const blynkUrl = process.env.MOTIONMODE + "1";
@@ -118,6 +155,7 @@ const turnOFFMotionMode = async (req, res) => {
         if (!motionMode) {
             return res.status(404).json({ success: false, message: 'motionMode not found' });
         }
+        motionMode.history.push({ value: "off", timestamp: new Date() });
         motionMode.status = "offline";
         motionMode.save();
         const blynkUrl = process.env.MOTIONMODE + "0";
@@ -131,6 +169,7 @@ const turnOFFMotionMode = async (req, res) => {
         res.status(500).json({ success: false, message: error.message });
     }
 }
+
 const fanController = async (req,res) => {
     console.log("fanController")
     try{
@@ -144,6 +183,7 @@ const fanController = async (req,res) => {
         if (!fan) {
             return res.status(404).json({ success: false, message: 'fan not found' });
         }
+        fan.history.push({ value, timestamp: new Date() });
         fan.current_value = value;
         fan.save();
         const blynkUrl = process.env.FAN + value;
@@ -158,7 +198,8 @@ const fanController = async (req,res) => {
     }
 }
 module.exports = {
-    turnONLed,
+    turnONLed_medium,
+    turnONLed_max,
     turnOFFLed,
     turnONAutoLed,
     turnOFFAutoLed,
