@@ -11,45 +11,6 @@ import ProtectedRoute from "../components/ProtectedRoute";
 export default function Setting() {
   const [isContactOpen, setIsContactOpen] = useState(false);
 
-  const activityLog = [
-    {
-      date: "01 Mar 2025",
-      device: "Camera",
-      action: "Camera activated",
-      details: "Camera was turned on at 10:00 AM.",
-    },
-    {
-      date: "01 Mar 2025",
-      device: "Air Conditioner",
-      action: "Air Conditioner turned on",
-      details: "Temperature set to 24°C at 11:30 AM.",
-    },
-    {
-      date: "01 Mar 2025",
-      device: "Smart TV",
-      action: "TV switched mode",
-      details: "Smart TV switched to Netflix at 12:15 PM.",
-    },
-    {
-      date: "01 Mar 2025",
-      device: "Security System",
-      action: "System armed",
-      details: "Security system was armed at 01:00 PM.",
-    },
-    {
-      date: "01 Mar 2025",
-      device: "Smart TV",
-      action: "TV switched mode",
-      details: "Smart TV switched to Netflix at 12:15 PM.",
-    },
-    {
-      date: "01 Mar 2025",
-      device: "Security System",
-      action: "System armed",
-      details: "Security system was armed at 01:00 PM.",
-    },
-  ];
-
   return (
     <ProtectedRoute>
       <div className="min-h-screen bg-gray-900 text-white flex">
@@ -58,7 +19,7 @@ export default function Setting() {
           <Header name="Setting" />
           <div className="flex flex-col md:flex-row gap-6">
             <div className="md:w-1/2 bg-gray-800 p-4 rounded-lg shadow-lg">
-              <ActivityLog logs={activityLog} />
+              <ActivityLog/>
             </div>
             <div className="md:w-1/2 flex flex-col gap-6 h-auto md:mb-0 mb-10">
               <ProfileForm />

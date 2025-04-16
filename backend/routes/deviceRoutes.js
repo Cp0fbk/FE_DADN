@@ -9,6 +9,7 @@ const {
   turnONMotionMode,
   turnOFFMotionMode,
   fanController,
+  getAllDevicesHistorySorted,
 } = require('../controllers/deviceController');
 const { authenticateMiddleware } = require('../middleware/auth');
 
@@ -29,5 +30,6 @@ router.post('/turnOFFmotionMode', authenticateMiddleware, turnOFFMotionMode);
 // Fan controller
 router.post('/fan/:value', authenticateMiddleware, fanController);
 
+router.get('/history/all', authenticateMiddleware, getAllDevicesHistorySorted);
 
 module.exports = router;

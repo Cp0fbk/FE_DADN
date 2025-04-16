@@ -171,11 +171,13 @@ const turnOFFMotionMode = async (req, res) => {
 }
 
 const fanController = async (req,res) => {
+    
     console.log("fanController")
     try{
         const value = req.params.value;
+        const numericValue = parseInt(value, 10);
         console.log("fan value", value)
-        if (value < '0' || value > '255') {
+        if (numericValue < 0 || numericValue > 255) {
             return res.status(400).json({ success: false, message: 'Invalid fan value' });
         }
         const userId = req.user._id;
@@ -197,6 +199,38 @@ const fanController = async (req,res) => {
         res.status(500).json({ success: false, message: error.message });
     }
 }
+
+const getAllDevicesHistorySorted = async (req, res) => {
+    try {
+        const userId = req.user._id;
+
+        const devices = await Device.find({ owner_id: userId });
+
+        let combinedHistory = [];
+
+        devices.forEach(device => {
+            const deviceHistory = device.history.map(entry => ({
+                device_id: device._id,
+                device_name: device.name,
+                device_type: device.type,
+                value: entry.value,
+                timestamp: entry.timestamp
+            }));
+            combinedHistory.push(...deviceHistory);
+        });
+
+        combinedHistory.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+        res.status(200).json({
+            success: true,
+            history: combinedHistory
+        });
+
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+
 module.exports = {
     turnONLed_medium,
     turnONLed_max,
@@ -205,5 +239,6 @@ module.exports = {
     turnOFFAutoLed,
     turnONMotionMode,
     turnOFFMotionMode,
-    fanController
+    fanController,
+    getAllDevicesHistorySorted
 }

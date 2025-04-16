@@ -42,7 +42,7 @@ const deviceList = [
 
 export default function DeviceController() {
   const [token, setToken] = useState(null);
-  const [time, setTime] = useState(null); // Khai báo state time
+  const [time, setTime] = useState(null); 
   const [isClient, setIsClient] = useState(false);
   const router = useRouter();
 

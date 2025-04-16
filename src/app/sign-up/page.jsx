@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 export default function SignUp() {
   const router = useRouter();
@@ -17,11 +18,11 @@ export default function SignUp() {
         email,
         password,
       });
-      alert("Sign up successful!");
+      toast.success("Sign up successful!");
       router.push("/");
     } catch (error) {
-      alert("Sign up error!");
-      console.error(error.response?.data || error.message);
+      toast.error("Sign up failed!", error.message);
+      // console.error(error.response?.data || error.message);
     }
   };
 

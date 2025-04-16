@@ -2,29 +2,41 @@
 import React, { useEffect } from "react";
 import axios from "axios";
 
-const LedControl = ({ brightness, setBrightness, isOn, autoMode, setAutoMode, token }) => {
-  
-  const toggleLed = async () => {
-    const url = isOn
-      ? "http://localhost:5000/api/devices/turnONled"
-      : "http://localhost:5000/api/devices/turnOFFled";
+const LedControl = ({ brightness, setBrightness, autoMode, setAutoMode, token }) => {
+  useEffect(() => {
+    const storedData = JSON.parse(localStorage.getItem("deviceData"));
+    if (storedData) {
+      if (storedData.led !== undefined) setBrightness(parseInt(storedData.led));
+      if (storedData.autoled !== undefined)
+        setAutoMode(storedData.autoled !== "offline");
+    }
+  }, [setBrightness, setAutoMode]);
+
+  const sendBrightnessLevel = async (level) => {
+    let url = "";
+    if (level === 0) {
+      url = "http://localhost:5000/api/devices/turnOFFled";
+    } else if (level === 50) {
+      url = "http://localhost:5000/api/devices/turnONled_medium";
+    } else if (level === 100) {
+      url = "http://localhost:5000/api/devices/turnONled_high";
+    }
 
     try {
       const response = await axios.post(url, {}, {
         headers: {
-          "Authorization": `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
       });
 
       if (response.status === 200) {
-        console.log(response.data); 
-        // toast.success("Successful change");
+        console.log(`LED action (${url}) executed successfully.`);
       } else {
-        console.error("Error:", response.data);
+        console.error("LED action failed:", response.data);
       }
     } catch (error) {
-      console.error("Error in LED API call:", error);
+      console.error("Error sending LED brightness level:", error);
     }
   };
 
@@ -36,14 +48,13 @@ const LedControl = ({ brightness, setBrightness, isOn, autoMode, setAutoMode, to
     try {
       const response = await axios.post(url, {}, {
         headers: {
-          "Authorization": `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
       });
 
       if (response.status === 200) {
-        console.log(response.data); 
-        // toast.success("Successful change");
+        console.log(response.data);
       } else {
         console.error("Error:", response.data);
       }
@@ -53,20 +64,21 @@ const LedControl = ({ brightness, setBrightness, isOn, autoMode, setAutoMode, to
   };
 
   useEffect(() => {
-    if (isOn) {
-      toggleLed(); 
-    } else {
-      toggleLed(); 
+    if (!autoMode) {
+      sendBrightnessLevel(brightness);
     }
-  }, [isOn]);
+  }, [brightness]);
 
   useEffect(() => {
-    if (autoMode) {
-      toggleAutoLed(); 
-    } else {
-      toggleAutoLed();
-    }
+    toggleAutoLed();
   }, [autoMode]);
+
+  const brightnessLabel = {
+    0: "OFF",
+    50: "MEDIUM",
+    100: "HIGH",
+    99: "HIGH"
+  };
 
   return (
     <div>
@@ -75,12 +87,22 @@ const LedControl = ({ brightness, setBrightness, isOn, autoMode, setAutoMode, to
           type="range"
           min="0"
           max="100"
+          step="50"
           value={brightness}
-          onChange={(e) => setBrightness(e.target.value)}
+          onChange={(e) => {
+            const newBrightness = parseInt(e.target.value);
+            setBrightness(newBrightness);
+
+            const storedData = JSON.parse(localStorage.getItem("deviceData")) || {};
+            storedData.led = newBrightness;
+            localStorage.setItem("deviceData", JSON.stringify(storedData));
+          }}
+          
           className="w-full cursor-pointer"
-          disabled={!isOn || autoMode}
         />
-        <p className="text-xs mt-1 text-gray-400">Brightness: {brightness}%</p>
+        <p className="text-xs mt-1 text-gray-400">
+          Brightness: {brightnessLabel[brightness]}
+        </p>
 
         <div className="flex items-center justify-between mt-2">
           <span className="text-xs md:text-sm">Auto Mode</span>

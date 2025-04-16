@@ -23,6 +23,8 @@ export default function Home() {
         password,
       });
       localStorage.setItem("token", res.data.data.accessToken);
+      localStorage.setItem("deviceData", JSON.stringify(res.data.data));
+
       toast.success("Login successful!");
       router.push("/device-controller");
     } catch (error) {
