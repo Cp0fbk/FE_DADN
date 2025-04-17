@@ -158,8 +158,48 @@ const profile  = async(req,res) => {
         })
     }
 }
+
+const changePassword = async (req, res) => {
+    const userId = req.user._id;
+    const { oldPassword, newPassword } = req.body;
+
+    try {
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: "User not found",
+            });
+        }
+
+        const isMatch = await bycrypt.compare(oldPassword, user.password);
+        if (!isMatch) {
+            return res.status(400).json({
+                success: false,
+                message: "Old password is incorrect",
+            });
+        }
+
+        const hashedNewPassword = await bycrypt.hash(newPassword, 12);
+        user.password = hashedNewPassword;
+        await user.save();
+
+        return res.status(200).json({
+            success: true,
+            message: "Password changed successfully",
+        });
+    } catch (err) {
+        return res.status(500).json({
+            success: false,
+            message: err.message,
+        });
+    }
+};
+
+
 module.exports = {
     loginUser,
     registerUser,
-    profile
+    profile,
+    changePassword
 }
