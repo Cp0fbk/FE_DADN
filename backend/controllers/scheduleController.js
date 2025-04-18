@@ -91,8 +91,32 @@ const deleteSchedule = async (req,res) => {
         res.status(500).json({ success: false, message: error.message });
     }
 }
+const getSchedules = async (req, res) => {
+    // console.log("getSchedules");
+    try {
+        const userId = req.user._id;
+
+        const devices = await Device.find({ owner_id: userId });
+        const deviceIds = devices.map(device => device._id);
+
+        const schedules = await Schedule.find({
+            deviceId: { $in: deviceIds },
+            done: false
+        }).sort({ time: 1 });
+
+        res.status(200).json({
+            success: true,
+            data: schedules
+        });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+
+
 module.exports = {
     createLedSchedule,
     createFanSchedule,
-    deleteSchedule
+    deleteSchedule,
+    getSchedules
 }

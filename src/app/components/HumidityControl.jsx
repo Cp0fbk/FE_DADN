@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { FaWind } from "react-icons/fa";
 import axios from "axios";
+import { updateHumidity } from "../services/deviceService";
 
 const HumidityControl = ({ renderScale, token }) => {
   const [humidity, setHumidity] = useState(50);
@@ -15,6 +16,7 @@ const HumidityControl = ({ renderScale, token }) => {
           },
         });
         setHumidity(res.data?.value ?? 50);
+        updateHumidity(res.data?.value ?? 50, token);
       } catch (err) {
         console.error("Failed to fetch humidity:", err);
       }

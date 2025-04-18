@@ -39,7 +39,7 @@ export default function ProfileForm() {
 
   return (
     <div className="bg-gray-800 p-4 rounded-lg shadow-lg">
-      <h2 className="flex items-center gap-2 text-xl font-bold mb-4">
+      <h2 className="flex items-center gap-2 text-lg font-bold mb-4">
         <FaPen /> Edit Profile
       </h2>
       <div className="w-24 h-24 bg-gray-600 rounded-full mb-4 overflow-hidden">

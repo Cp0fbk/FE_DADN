@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { FaSnowflake } from "react-icons/fa";
+import { updateTemperature } from "../services/deviceService";
 
 const TemperatureControl = ({ renderScale, token }) => {
   const [temperature, setTemperature] = useState(24);
@@ -15,6 +16,7 @@ const TemperatureControl = ({ renderScale, token }) => {
           },
         });
         setTemperature(res.data?.value ?? 24);
+        updateTemperature(res.data?.value ?? 24, token);
       } catch (err) {
         console.error("Failed to fetch temperature:", err);
       }
@@ -32,9 +34,9 @@ const TemperatureControl = ({ renderScale, token }) => {
         <div
           className="h-full rounded-full transition-all"
           style={{
-            width: `${((temperature - 16) / 14) * 100}%`,
+            width: `${(temperature / 100) * 100}%`,
             background: "linear-gradient(to right, #00bfff, #f9d423, #ff4e50)",
-            borderRadius: "9999px"
+            borderRadius: "9999px",
           }}
         ></div>
         <FaSnowflake className="absolute right-1 top-1/2 -translate-y-1/2 text-white text-xs" />

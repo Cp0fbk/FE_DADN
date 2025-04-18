@@ -10,7 +10,6 @@ const DeviceCard = ({ icon: Icon, name, description, token }) => {
   const [brightness, setBrightness] = useState(0);
   const [autoMode, setAutoMode] = useState(false);
 
-
   const renderScale = (steps, min, max) =>
     Array.from({ length: steps + 1 }).map((_, i) => {
       const percent = (i / steps) * 100;
@@ -27,12 +26,9 @@ const DeviceCard = ({ icon: Icon, name, description, token }) => {
     });
 
   return (
-    <div className="bg-gray-800 p-4 rounded-lg shadow-lg text-sm md:text-base text-white relative">
+    <div className="bg-[#303030] p-4 rounded-lg shadow-lg text-sm md:text-base text-white relative">
       <div className="flex justify-between items-center mb-3">
         <DeviceIcon icon={Icon} name={name} brightness={brightness} speed={speed} />
-        {/* {name !== "Temperature" && name !== "Humidity" && name!="LED" && (
-          <PowerSwitch isOn={isOn} togglePower={togglePower} />
-        )} */}
       </div>
 
       <p className="text-lg font-semibold">{name}</p>
@@ -42,7 +38,6 @@ const DeviceCard = ({ icon: Icon, name, description, token }) => {
         <FanControl
           speed={speed}
           setSpeed={setSpeed}
-          // isOn={isOn}
           token={token}
         />
       )}

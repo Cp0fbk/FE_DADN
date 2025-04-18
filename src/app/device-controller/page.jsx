@@ -10,12 +10,12 @@ import {
   FaClock,
 } from "react-icons/fa";
 import { PiFanFill } from "react-icons/pi";
-import Sidebar from "../components/SideBar";
 import DeviceCard from "../components/DeviceCard";
 import Header from "../components/Header";
 import { DoorSensor } from "../components/DoorSensor";
 import { SetTime } from "../components/SetTime";
 import ProtectedRoute from "../components/ProtectedRoute";
+import Footer from "../components/Footer";
 
 const deviceList = [
   {
@@ -42,7 +42,7 @@ const deviceList = [
 
 export default function DeviceController() {
   const [token, setToken] = useState(null);
-  const [time, setTime] = useState(null); 
+  const [time, setTime] = useState(null);
   const [isClient, setIsClient] = useState(false);
   const router = useRouter();
 
@@ -52,31 +52,29 @@ export default function DeviceController() {
     const storedToken = localStorage.getItem("token");
 
     if (!storedToken) {
-      router.push("/"); 
+      router.push("/");
     } else {
       setToken(storedToken);
     }
     const interval = setInterval(() => {
       const currentTime = new Date();
       setTime(currentTime);
-    }, 1000); 
+    }, 1000);
 
     return () => clearInterval(interval);
   }, [router]);
 
   if (!isClient) {
-    return null; 
+    return null;
   }
 
   return (
     <ProtectedRoute>
-      <div className="min-h-screen bg-gray-900 text-white flex flex-col md:flex-row">
+      <Header />
+      <div className="min-h-screen bg-[#212121] text-white flex flex-col">
         {/* Sidebar Navigation */}
-        <Sidebar />
 
-        <div className="md:ml-16 flex-1 p-6 md:mt-0">
-          <Header name="Device Controller" />
-
+        <div className=" flex-1 p-6 md:mt-0">
           {/* hình ảnh + thời gian */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <div className="relative rounded-xl overflow-hidden bg-[#0a0c2c]">
@@ -114,7 +112,7 @@ export default function DeviceController() {
             </div>
 
             {/* Danh sách device */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-6 sm:grid-cols-2 lg:grid-cols-2">
               {deviceList.map((device, index) => (
                 <DeviceCard
                   key={index}
@@ -127,13 +125,17 @@ export default function DeviceController() {
             </div>
           </div>
           {/* Khung hẹn giờ và cảm biến cửa */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6 mb-10 md:mb-0">
-            <SetTime />
-
-            <DoorSensor />
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-6 mb-10 md:mb-0">
+            <div className="col-span-1 sm:col-span-2 lg:col-span-2">
+              <SetTime />
+            </div>
+            <div className="col-span-1 sm:col-span-2 lg:col-span-1">
+              <DoorSensor token={token} />
+            </div>
           </div>
         </div>
       </div>
+      <Footer/>
     </ProtectedRoute>
   );
 }

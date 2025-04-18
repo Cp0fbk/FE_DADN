@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { FaHistory } from "react-icons/fa";
 import axios from "axios";
+import LoadingAtom from "../utils/LoadingAtom";
 
 const formatDate = (isoString) => {
   const date = new Date(isoString);
@@ -88,9 +89,9 @@ const ActivityLog = () => {
       <h2 className="flex items-center gap-2 text-lg font-bold mb-4">
         <FaHistory /> Activity Log
       </h2>
-      <div className="relative border-l border-gray-700 ml-4 space-y-4 max-h-[678px] overflow-y-auto p-2">
+      <div className="relative border-l border-gray-700 ml-4 space-y-4 max-h-[678px] overflow-y-auto p-2 scrollbar-hidden">
         {loading ? (
-          <div className="text-center text-gray-400">Loading...</div> // Hiển thị khi đang loading
+          <LoadingAtom/> 
         ) : (
           logs.map((item, index) => (
             <div key={index} className="ml-6 relative">

@@ -18,7 +18,7 @@ const LedControl = ({ brightness, setBrightness, autoMode, setAutoMode, token })
       url = "http://localhost:5000/api/devices/turnOFFled";
     } else if (level === 50) {
       url = "http://localhost:5000/api/devices/turnONled_medium";
-    } else if (level === 100) {
+    } else if (level === 100 || level === 99) {
       url = "http://localhost:5000/api/devices/turnONled_high";
     }
 

@@ -71,6 +71,8 @@ const registerUser = async(req,res) => {
         await motionSensor.save();
         await temperatureSensor.save();
         await humiditySensor.save();
+        console.log(temperatureSensor);
+        
 
         await user.save();
         return res.status(201).json({
@@ -109,21 +111,30 @@ const loginUser = async(req,res) => {
     const motionSensor = await Device.findOne({ owner_id: existingUser._id, type: 'motion' });
     const temperatureSensor = await Sensor.findOne({ owner_id: existingUser._id, type: 'temperature' });
     const humiditySensor = await Sensor.findOne({ owner_id: existingUser._id, type: 'humidity' });
+    console.log("temp val: ",temperatureSensor.value.length)
+    let temperature_value = 0;
+    if(temperatureSensor.value.length == 0){
+        temperature_value = 0;
+    }
+    let humidity_value = 0;
+    if(humiditySensor.value.length == 0){
+        humidity_value = 0;
+    }
     try {
-        await axios.get(process.env.LED + led.current_value);
-        if (autoled.status === "online") {
-            await axios.get(process.env.AUTOLED + "1");
-        }else {
-            await axios.get(process.env.AUTOLED + "0");
-        }
-        if (motionSensor.status === "online") {
-            await axios.get(process.env.MOTIONMODE + "1");
-        } else {
-            await axios.get(process.env.MOTIONMODE + "0");
-        }
-        await axios.get(process.env.FAN + fan.current_value);
-        await axios.get(process.env.TEMPERATURE_UPDATE + temperatureSensor.value[temperatureSensor.value.length - 1].value);
-        await axios.get(process.env.HUMI_UPDATE + humiditySensor.value[humiditySensor.value.length - 1].value);
+        // await axios.get(process.env.LED + led.current_value);
+        // if (autoled.status === "online") {
+        //     await axios.get(process.env.AUTOLED + "1");
+        // }else {
+        //     await axios.get(process.env.AUTOLED + "0");
+        // }
+        // if (motionSensor.status === "online") {
+        //     await axios.get(process.env.MOTIONMODE + "1");
+        // } else {
+        //     await axios.get(process.env.MOTIONMODE + "0");
+        // }
+        // await axios.get(process.env.FAN + fan.current_value);
+        // await axios.get(process.env.TEMPERATURE_UPDATE + temperature_value);
+        // await axios.get(process.env.HUMI_UPDATE + humidity_value);
         console.log("init blynk after login success"); 
     } catch (err) {
         console.error("Error calling Blynk:", err.message);

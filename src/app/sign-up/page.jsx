@@ -19,6 +19,7 @@ export default function SignUp() {
         password,
       });
       toast.success("Sign up successful!");
+      
       router.push("/");
     } catch (error) {
       toast.error("Sign up failed!", error.message);

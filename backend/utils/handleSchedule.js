@@ -5,12 +5,14 @@ const axios = require('axios');
 const handleSchedule = async () => {
     try {
         const now = new Date();
+        // console.log(now);
+        
         const schedules = await Schedule.find({ done: false });
 
         for (const sch of schedules) {
             const scheduledTime = new Date(sch.time);
             // console.log("scheduledTime: ", scheduledTime);
-            if (scheduledTime >= now) {
+            if (scheduledTime <= now) {
                 console.log(`Đến giờ rồi: ${sch.action}`);
 
                 const [type, valueStr] = sch.action.split('/');
@@ -43,7 +45,7 @@ const handleSchedule = async () => {
                     console.log("done"); 
                 } catch (err) {
                     console.error("Error calling Blynk:", err.message);
-                    return res.status(500).json({ success: false, message: "Failed to trigger Blynk LED" });
+                    // return res.status(500).json({ success: false, message: "Failed to trigger Blynk LED" });
                 }
                 // Lưu lịch sử thiết bị
                 const device = await Device.findById(sch.deviceId);

@@ -89,22 +89,35 @@ const getHumiValue = async (req,res) => {
         res.status(500).json({ success: false, message: error.message });
     }
 }
-const getALLTempValue = async (req,res) => {
-    try{
+const getALLTempValue = async (req, res) => {
+    try {
         const userId = req.user._id;
-        const item = await Sensor.findOne({ owner_id: userId, type: 'temperature' });
+
+        const startOfDay = new Date();
+        startOfDay.setHours(0, 0, 0, 0);
+
+        const endOfDay = new Date();
+        endOfDay.setHours(23, 59, 59, 999); 
+
+        const item = await Sensor.findOne({
+            owner_id: userId,
+            type: 'temperature',
+            'value.timestamp': { $gte: startOfDay, $lte: endOfDay } 
+        });
+
         if (!item) {
-            return res.status(404).json({ success: false, message: 'Temp not found' });
+            return res.status(404).json({ success: false, message: 'Temp not found for today' });
         }
+
         res.status(200).json({
             success: true,
             values: item.value
-        })
-    }catch(error)
-    {
+        });
+    } catch (error) {
         res.status(500).json({ success: false, message: error.message });
     }
-}
+};
+
 const getALLHumiValue = async (req,res) => {
     try{
         const userId = req.user._id;
