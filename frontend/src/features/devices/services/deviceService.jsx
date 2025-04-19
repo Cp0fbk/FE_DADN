@@ -225,6 +225,45 @@ const getTemperature = async (token) => {
   }
 };
 
+export const fetchTemperatureData = async (token) => {
+  const response = await axios.get(`${BASE_URL}/api/sensors/temp/all`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (response.data.success) {
+    return response.data.values.map((item) => ({
+      time: new Date(item.timestamp).toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+      }),
+      temperature: item.value,
+    }));
+  }
+
+  throw new Error("Failed to fetch temperature data");
+};
+
+export const fetchHumidityData = async (token) => {
+  const response = await axios.get(`${BASE_URL}/api/sensors/humi/all`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (response.data.success) {
+    return response.data.value.map((item) => ({
+      time: new Date(item.timestamp).toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+      }),
+      humidity: item.value,
+    }));
+  }
+
+  throw new Error("Failed to fetch humidity data");
+};
 
 export {
   updateTemperature,

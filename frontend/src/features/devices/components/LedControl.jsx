@@ -1,16 +1,8 @@
 "use client";
-import React, { useEffect } from "react";
+import React, { useEffect} from "react";
 import { controlLEDBrightness, toggleAutoLed } from "../services/deviceService";
 
 const LedControl = ({ brightness, setBrightness, autoMode, setAutoMode, token }) => {
-  useEffect(() => {
-    const storedData = JSON.parse(localStorage.getItem("deviceData"));
-    if (storedData) {
-      if (storedData.led !== undefined) setBrightness(parseInt(storedData.led));
-      if (storedData.autoled !== undefined)
-        setAutoMode(storedData.autoled !== "offline");
-    }
-  }, [setBrightness, setAutoMode]);
 
   const sendBrightnessLevel = async (level) => {
     await controlLEDBrightness(level, token);
@@ -22,9 +14,7 @@ const LedControl = ({ brightness, setBrightness, autoMode, setAutoMode, token })
   
 
   useEffect(() => {
-    if (!autoMode) {
       sendBrightnessLevel(brightness);
-    }
   }, [brightness]);
 
   useEffect(() => {
@@ -50,10 +40,6 @@ const LedControl = ({ brightness, setBrightness, autoMode, setAutoMode, token })
           onChange={(e) => {
             const newBrightness = parseInt(e.target.value);
             setBrightness(newBrightness);
-
-            const storedData = JSON.parse(localStorage.getItem("deviceData")) || {};
-            storedData.led = newBrightness;
-            localStorage.setItem("deviceData", JSON.stringify(storedData));
           }}
           
           className="w-full cursor-pointer"

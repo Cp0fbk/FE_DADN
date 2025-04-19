@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
+import { registerUser } from "../services/authService";
 
 export default function SignUp() {
   const router = useRouter();
@@ -13,17 +14,11 @@ export default function SignUp() {
   const handleRegister = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("http://localhost:5000/api/auth/register", {
-        username,
-        email,
-        password,
-      });
+      await registerUser({ username, email, password });
       toast.success("Sign up successful!");
-      
       router.push("/");
     } catch (error) {
-      toast.error("Sign up failed!", error.message);
-      // console.error(error.response?.data || error.message);
+      toast.error("Sign up failed: " + (error.message || "Unknown error"));
     }
   };
 

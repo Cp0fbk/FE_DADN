@@ -7,7 +7,7 @@ import { FaFacebook, FaApple } from "react-icons/fa";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import toast from "react-hot-toast";
-import ProtectedRoute from "../features/auth/components/ProtectedRoute";
+import { login } from "@/features/auth/services/authService";
 
 export default function Home() {
   const [isOpen, setIsOpen] = useState(false);
@@ -18,13 +18,9 @@ export default function Home() {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post("http://localhost:5000/api/auth/login", {
-        username,
-        password,
-      });
-      localStorage.setItem("token", res.data.data.accessToken);
-      localStorage.setItem("deviceData", JSON.stringify(res.data.data));
-
+      const res = await login(username, password); 
+      localStorage.setItem("token", res.data.accessToken);
+  
       toast.success("Login successful!");
       router.push("/device-controller");
     } catch (error) {

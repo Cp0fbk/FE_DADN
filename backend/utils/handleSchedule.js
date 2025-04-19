@@ -54,6 +54,7 @@ const handleSchedule = async () => {
                         value: value,
                         timestamp: new Date()
                     });
+                    device.current_value = value.toString();
                     await device.save();
                 }
 

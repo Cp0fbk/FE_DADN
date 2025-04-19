@@ -207,10 +207,43 @@ const changePassword = async (req, res) => {
     }
 };
 
+const getLastUsedDevices = async (req, res) => {
+    const user_id = req.user._id;
+
+    try {
+        const led = await Device.findOne({ owner_id: user_id, type: 'led' });
+        const autoled = await Device.findOne({ owner_id: user_id, type: 'autoled' });
+        const fan = await Device.findOne({ owner_id: user_id, type: 'fan' });
+        const motionSensor = await Device.findOne({ owner_id: user_id, type: 'motion' });
+
+        res.status(200).json({
+            success: true,
+            data: {
+                led: {
+                    current_value: led?.current_value || "N/A", 
+                },
+                autoled: {
+                    status: autoled?.status || "N/A",
+                },
+                fan: {
+                    current_value: fan?.current_value || "N/A",
+                },
+                motionSensor: {
+                    status: motionSensor?.status || "N/A",
+                },
+            },
+        });
+    } catch (err) {
+        res.status(500).json({ success: false, message: "Failed to fetch device data" });
+    }
+};
+
+
 
 module.exports = {
     loginUser,
     registerUser,
     profile,
-    changePassword
+    changePassword,
+    getLastUsedDevices
 }

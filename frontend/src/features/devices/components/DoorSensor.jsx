@@ -7,13 +7,6 @@ import toast from "react-hot-toast";
 export function DoorSensor({ token }) {
   const [motionStatus, setMotionStatus] = useState("offline");
 
-  useEffect(() => {
-    const storedData = JSON.parse(localStorage.getItem("deviceData"));
-    if (storedData && typeof storedData.motionSensor === "string") {
-      setMotionStatus(storedData.motionSensor);
-    }
-  }, []);
-
   const toggleMotion = async () => {
     const storedData = JSON.parse(localStorage.getItem("deviceData")) || {};
 

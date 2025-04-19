@@ -12,7 +12,7 @@ import {
   ResponsiveContainer,
   Legend,
 } from "recharts";
-import axios from "axios";
+import { fetchHumidityData, fetchTemperatureData } from "@/features/devices/services/deviceService";
 import ProtectedRoute from "../../auth/components/ProtectedRoute";
 import { useRouter } from "next/navigation";
 import LoadingAtom from "../../../utils/LoadingAtom";
@@ -25,73 +25,28 @@ export default function Analytics() {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    const fetchTemperatureData = async () => {
+    if (!token) {
+      router.push("/");
+      return;
+    }
+  
+    const getData = async () => {
       try {
-        if (!token) {
-          router.push("/");
-          return;
-        }
-        const response = await axios.get(
-          "http://localhost:5000/api/sensors/temp/all",
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-
-        if (response.data.success) {
-          const formattedData = response.data.values.map((item) => ({
-            time: new Date(item.timestamp).toLocaleTimeString([], {
-              hour: "2-digit",
-              minute: "2-digit",
-            }),
-            temperature: item.value,
-          }));
-          setTemperatureData(formattedData);
-        }
+        const [tempData, humiData] = await Promise.all([
+          fetchTemperatureData(token),
+          fetchHumidityData(token),
+        ]);
+  
+        setTemperatureData(tempData);
+        setHumidityData(humiData);
       } catch (error) {
-        console.error("Error fetching temperature data:", error);
+        console.error("Error fetching sensor data:", error);
       } finally {
         setLoading(false);
       }
     };
-
-    const fetchHumidityData = async () => {
-      try {
-        if (!token) {
-          router.push("/");
-          return;
-        }
-        const response = await axios.get(
-          "http://localhost:5000/api/sensors/humi/all",
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-
-        if (response.data.success) {
-          const formattedData = response.data.value.map((item) => ({
-            time: new Date(item.timestamp).toLocaleTimeString([], {
-              hour: "2-digit",
-              minute: "2-digit",
-            }),
-            humidity: item.value,
-          }));
-          setHumidityData(formattedData);
-        }
-      } catch (error) {
-        console.error("Error fetching humidity data:", error);
-      }
-      finally {
-        setLoading(false);
-      }
-    };
-
-    fetchTemperatureData();
-    fetchHumidityData();
+  
+    getData();
   }, []);
 
   return (

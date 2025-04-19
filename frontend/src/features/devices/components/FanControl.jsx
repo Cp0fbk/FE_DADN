@@ -2,20 +2,10 @@ import React, { useEffect } from "react";
 import { setFanSpeed } from "../services/deviceService";
 
 const FanControl = ({ speed, setSpeed, token }) => {
-  useEffect(() => {
-    const storedData = JSON.parse(localStorage.getItem("deviceData"));
-    if (storedData && storedData.fan) {
-      setSpeed(parseInt(storedData.fan));
-    }
-  }, [setSpeed]);
 
   const handleSpeedChange = async (e) => {
     const newSpeed = parseInt(e.target.value);
     setSpeed(newSpeed);
-  
-    const storedData = JSON.parse(localStorage.getItem("deviceData")) || {};
-    storedData.fan = newSpeed;
-    localStorage.setItem("deviceData", JSON.stringify(storedData));
   
     try {
       await setFanSpeed(newSpeed, token);
