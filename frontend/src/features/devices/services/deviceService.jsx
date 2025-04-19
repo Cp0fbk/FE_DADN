@@ -213,7 +213,7 @@ const getHumidity = async (token) => {
 
 const getTemperature = async (token) => {
   try {
-    const res = await axios.get(`${BASE_URL}/sensors/temp`, {
+    const res = await axios.get(`${BASE_URL}/api/sensors/temp`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
