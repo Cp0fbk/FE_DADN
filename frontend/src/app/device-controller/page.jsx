@@ -1,5 +1,10 @@
-import DeviceControllerPage from '@/features/devices/pages/DeviceControllerPage';
+import DeviceControllerPage from "@/features/devices/pages/DeviceControllerPage";
+import ProtectedRoute from "@/features/auth/components/ProtectedRoute";
 
 export default function Page() {
-  return <DeviceControllerPage />;
+  return (
+    <ProtectedRoute>
+      <DeviceControllerPage />
+    </ProtectedRoute>
+  );
 }

@@ -17,7 +17,7 @@ export default function Setting() {
       <div className="min-h-screen bg-[#212121] text-white flex">
         <div className="flex-1 p-6">
           <div className="flex flex-col md:flex-row gap-6">
-            <div className="md:w-1/2 bg-gray-800 p-4 rounded-lg shadow-lg">
+            <div className="md:w-1/2 bg-[#303030] p-4 rounded-lg shadow-lg">
               <ActivityLog />
             </div>
             <div className="md:w-1/2 flex flex-col gap-6 h-auto md:mb-0 mb-10">

@@ -1,8 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { FaWind } from "react-icons/fa";
-import axios from "axios";
-import { updateHumidity } from "../services/deviceService";
+import { updateHumidity, getHumidity } from "../services/deviceService";
 
 const HumidityControl = ({ renderScale, token }) => {
   const [humidity, setHumidity] = useState(50);
@@ -10,23 +9,20 @@ const HumidityControl = ({ renderScale, token }) => {
   useEffect(() => {
     const fetchHumidity = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/api/sensors/humi", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        setHumidity(res.data?.value ?? 50);
-        updateHumidity(res.data?.value ?? 50, token);
+        const value = await getHumidity(token);
+        setHumidity(value);
+        updateHumidity(value, token);
       } catch (err) {
         console.error("Failed to fetch humidity:", err);
       }
     };
-
+  
     fetchHumidity();
-
+  
     const interval = setInterval(fetchHumidity, 5000);
     return () => clearInterval(interval);
   }, [token]);
+  
 
   return (
     <div className="mt-4">

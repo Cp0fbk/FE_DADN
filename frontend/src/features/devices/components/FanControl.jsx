@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import axios from "axios";
+import { setFanSpeed } from "../services/deviceService";
 
 const FanControl = ({ speed, setSpeed, token }) => {
   useEffect(() => {
@@ -18,20 +18,11 @@ const FanControl = ({ speed, setSpeed, token }) => {
     localStorage.setItem("deviceData", JSON.stringify(storedData));
   
     try {
-      await axios.post(
-        `http://localhost:5000/api/devices/fan/${newSpeed}`,
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      await setFanSpeed(newSpeed, token);
     } catch (err) {
       console.error("Failed to update fan speed:", err.message);
     }
-  };
+  };  
   
 
   return (

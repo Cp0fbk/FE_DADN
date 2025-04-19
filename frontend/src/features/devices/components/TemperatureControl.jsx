@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { FaSnowflake } from "react-icons/fa";
-import { updateTemperature } from "../services/deviceService";
+import { getTemperature, updateTemperature } from "../services/deviceService";
 
 const TemperatureControl = ({ renderScale, token }) => {
   const [temperature, setTemperature] = useState(24);
@@ -10,23 +10,20 @@ const TemperatureControl = ({ renderScale, token }) => {
   useEffect(() => {
     const fetchTemperature = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/api/sensors/temp", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        setTemperature(res.data?.value ?? 24);
-        updateTemperature(res.data?.value ?? 24, token);
+        const value = await getTemperature(token);
+        setTemperature(value);
+        updateTemperature(value, token);
       } catch (err) {
         console.error("Failed to fetch temperature:", err);
       }
     };
-
+  
     fetchTemperature();
-
+  
     const interval = setInterval(fetchTemperature, 5000);
     return () => clearInterval(interval);
   }, [token]);
+  
 
   return (
     <div className="mt-4">

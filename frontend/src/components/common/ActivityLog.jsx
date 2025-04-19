@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { FaHistory } from "react-icons/fa";
-import axios from "axios";
 import LoadingAtom from "../../utils/LoadingAtom";
+import { getDeviceHistoryLogs } from "@/features/devices/services/deviceService";
 
 const formatDate = (isoString) => {
   const date = new Date(isoString);
@@ -29,20 +29,16 @@ const ActivityLog = () => {
   useEffect(() => {
     const fetchLogs = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/api/devices/history/all", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        const formatted = res.data.history.map((item) => {
+        const rawLogs = await getDeviceHistoryLogs(token);
+  
+        const formatted = rawLogs.map((item) => {
           const date = formatDate(item.timestamp);
           const time = formatTime(item.timestamp);
           const device = item.device_name.toUpperCase();
           const value = item.value;
           let action = "";
           let details = "";
-
+  
           switch (device.toLowerCase()) {
             case "fan":
               action = "Fan speed was changed";
@@ -64,7 +60,7 @@ const ActivityLog = () => {
               action = `${device} set to ${value}`;
               details = `Value was set to ${value} at ${time}.`;
           }
-
+  
           return {
             date,
             device,
@@ -72,7 +68,7 @@ const ActivityLog = () => {
             details,
           };
         });
-
+  
         setLogs(formatted);
       } catch (err) {
         console.error("Failed to fetch logs", err);
@@ -80,9 +76,10 @@ const ActivityLog = () => {
         setLoading(false);
       }
     };
-
+  
     fetchLogs();
   }, []);
+  
 
   return (
     <div>

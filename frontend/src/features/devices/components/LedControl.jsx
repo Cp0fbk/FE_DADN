@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect } from "react";
-import axios from "axios";
+import { controlLEDBrightness, toggleAutoLed } from "../services/deviceService";
 
 const LedControl = ({ brightness, setBrightness, autoMode, setAutoMode, token }) => {
   useEffect(() => {
@@ -13,55 +13,13 @@ const LedControl = ({ brightness, setBrightness, autoMode, setAutoMode, token })
   }, [setBrightness, setAutoMode]);
 
   const sendBrightnessLevel = async (level) => {
-    let url = "";
-    if (level === 0) {
-      url = "http://localhost:5000/api/devices/turnOFFled";
-    } else if (level === 50) {
-      url = "http://localhost:5000/api/devices/turnONled_medium";
-    } else if (level === 100 || level === 99) {
-      url = "http://localhost:5000/api/devices/turnONled_high";
-    }
-
-    try {
-      const response = await axios.post(url, {}, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      });
-
-      if (response.status === 200) {
-        console.log(`LED action (${url}) executed successfully.`);
-      } else {
-        console.error("LED action failed:", response.data);
-      }
-    } catch (error) {
-      console.error("Error sending LED brightness level:", error);
-    }
+    await controlLEDBrightness(level, token);
   };
-
-  const toggleAutoLed = async () => {
-    const url = autoMode
-      ? "http://localhost:5000/api/devices/turnONautoLed"
-      : "http://localhost:5000/api/devices/turnOFFautoLed";
-
-    try {
-      const response = await axios.post(url, {}, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      });
-
-      if (response.status === 200) {
-        console.log(response.data);
-      } else {
-        console.error("Error:", response.data);
-      }
-    } catch (error) {
-      console.error("Error in Auto LED API call:", error);
-    }
+  
+  const handleToggleAutoLed = async () => {
+    await toggleAutoLed(autoMode, token);
   };
+  
 
   useEffect(() => {
     if (!autoMode) {
@@ -70,9 +28,9 @@ const LedControl = ({ brightness, setBrightness, autoMode, setAutoMode, token })
   }, [brightness]);
 
   useEffect(() => {
-    toggleAutoLed();
+    handleToggleAutoLed();
   }, [autoMode]);
-
+  
   const brightnessLabel = {
     0: "OFF",
     50: "MEDIUM",

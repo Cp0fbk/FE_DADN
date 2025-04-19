@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { FaPen } from "react-icons/fa";
-import axios from "axios";
+import { getUserProfile } from "@/features/devices/services/deviceService";
 
 export default function ProfileForm() {
   const [user, setUser] = useState({
@@ -11,34 +11,29 @@ export default function ProfileForm() {
   const [isEditingPassword, setIsEditingPassword] = useState(false);
 
   useEffect(() => {
-    const token = localStorage.getItem("token"); 
-
+    const token = localStorage.getItem("token");
+  
     if (token) {
-      axios
-        .get("http://localhost:5000/api/auth/profile", {
-          headers: {
-            Authorization: `Bearer ${token}` 
-          }
-        })
-        .then((response) => {
+      getUserProfile(token)
+        .then((userData) => {
           setUser({
-            username: response.data.user.username,
-            email: response.data.user.email,
-            password: "" 
+            username: userData.username,
+            email: userData.email,
+            password: "",
           });
         })
         .catch((error) => {
           console.error("There was an error fetching the user data!", error);
         });
     }
-  }, []);
+  }, []);  
 
   const handleEditClick = () => {
     setIsEditingPassword(true);
   };
 
   return (
-    <div className="bg-gray-800 p-4 rounded-lg shadow-lg">
+    <div className="bg-[#303030] p-4 rounded-lg shadow-lg">
       <h2 className="flex items-center gap-2 text-lg font-bold mb-4">
         <FaPen /> Edit Profile
       </h2>
@@ -54,7 +49,7 @@ export default function ProfileForm() {
             name="username"
             value={user.username}
             // onChange={handleChange}
-            className="w-full p-2 bg-gray-700 rounded-md border border-gray-600"
+            className="w-full p-2 bg-gray-600 rounded-md border border-gray-600"
             disabled
           />
         </div>
@@ -67,7 +62,7 @@ export default function ProfileForm() {
             name="email"
             value={user.email}
             // onChange={handleChange}
-            className="w-full p-2 bg-gray-700 rounded-md border border-gray-600"
+            className="w-full p-2 bg-gray-600 rounded-md border border-gray-600"
             disabled
           />
         </div>
@@ -89,7 +84,7 @@ export default function ProfileForm() {
               // onChange={handleChange}
               disabled={!isEditingPassword}
               placeholder="*******"
-              className="w-full p-2 bg-gray-700 rounded-md border border-gray-600 pr-10"
+              className="w-full p-2 bg-gray-600 rounded-md border border-gray-600 pr-10"
             />
           </div>
         </div>
