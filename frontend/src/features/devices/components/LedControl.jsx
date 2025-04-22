@@ -1,25 +1,18 @@
 "use client";
 import React, { useEffect} from "react";
-import { controlLEDBrightness, toggleAutoLed } from "../services/deviceService";
+import { controlLEDBrightness } from "../services/deviceService";
 
-const LedControl = ({ brightness, setBrightness, autoMode, setAutoMode, token }) => {
+const LedControl = ({ brightness, setBrightness, token }) => {
 
   const sendBrightnessLevel = async (level) => {
     await controlLEDBrightness(level, token);
   };
   
-  const handleToggleAutoLed = async () => {
-    await toggleAutoLed(autoMode, token);
-  };
   
 
   useEffect(() => {
       sendBrightnessLevel(brightness);
   }, [brightness]);
-
-  useEffect(() => {
-    handleToggleAutoLed();
-  }, [autoMode]);
   
   const brightnessLabel = {
     0: "OFF",
@@ -48,22 +41,6 @@ const LedControl = ({ brightness, setBrightness, autoMode, setAutoMode, token })
           Brightness: {brightnessLabel[brightness]}
         </p>
 
-        <div className="flex items-center justify-between mt-2">
-          <span className="text-xs md:text-sm">Auto Mode</span>
-          <label className="relative inline-flex items-center cursor-pointer">
-            <input
-              type="checkbox"
-              checked={autoMode}
-              onChange={() => setAutoMode(!autoMode)}
-              className="sr-only peer"
-            />
-            <div
-              className="w-11 h-6 bg-gray-600 peer-focus:ring-2 peer-focus:ring-blue-300 rounded-full peer
-              peer-checked:bg-indigo-500 after:content-[''] after:absolute after:top-1 after:left-1 after:bg-white
-              after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-5"
-            ></div>
-          </label>
-        </div>
       </div>
     </div>
   );

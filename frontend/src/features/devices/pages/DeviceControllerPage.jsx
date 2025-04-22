@@ -12,7 +12,7 @@ import {
 import { PiFanFill } from "react-icons/pi";
 import DeviceCard from "../components/DeviceCard";
 import Header from "../../../components/layout/Header";
-import { DoorSensor } from "../components/DoorSensor";
+import { MotionControl } from "../components/MotionControl";
 import { SetTime } from "../../../components/forms/SetTime";
 import ProtectedRoute from "../../auth/components/ProtectedRoute";
 import Footer from "../../../components/layout/Footer";
@@ -130,7 +130,7 @@ export default function DeviceController() {
               <SetTime />
             </div>
             <div className="col-span-1 sm:col-span-2 lg:col-span-1">
-              <DoorSensor token={token} />
+              <MotionControl token={token} />
             </div>
           </div>
         </div>
