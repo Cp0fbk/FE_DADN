@@ -13,6 +13,29 @@ const updateTempValue = async (req,res) => {
         const { value } = req.body;
         const timestamp = new Date();
 
+        ///////////////////////////
+        const MAX_JUMP = 5;
+        const THRESHOLD_TEMP = 35;
+
+        // Kiểm tra nếu vượt ngưỡng
+        if (value > THRESHOLD_TEMP) {
+            return res.status(400).json({
+                success: false,
+                message: `Temperature ${value}°C exceeds the allowed limit (${THRESHOLD_TEMP}°C)`
+            });
+        }
+
+        // Kiểm tra thay đổi đột ngột
+        const lastValue = item.value.length > 0 ? item.value[item.value.length - 1].value : null;
+        if (lastValue !== null && Math.abs(value - lastValue) > MAX_JUMP) {
+            return res.status(400).json({
+                success: false,
+                message: `Sudden temperature change detected: from ${lastValue}°C to ${value}°C (maximum allowed change is ${MAX_JUMP}°C)`
+            });
+        }
+
+        /////////////////////////
+
         item.value.push({ value, timestamp });
         await item.save();
 
@@ -56,6 +79,26 @@ const updateHumiValue = async (req,res) => {
 
         const { value } = req.body;
         const timestamp = new Date();
+
+        //////////////////////////////
+        const THRESHOLD_HUMI = 90; 
+        const MAX_JUMP = 10;       
+
+        if (value > THRESHOLD_HUMI) {
+            return res.status(400).json({
+                success: false,
+                message: `Humidity ${value}% exceeds the allowed limit (${THRESHOLD_HUMI}%)`
+            });
+        }
+
+        const lastValue = item.value.length > 0 ? item.value[item.value.length - 1].value : null;
+        if (lastValue !== null && Math.abs(value - lastValue) > MAX_JUMP) {
+            return res.status(400).json({
+                success: false,
+                message: `Sudden humidity change detected: from ${lastValue}% to ${value}% (maximum allowed change is ${MAX_JUMP}%)`
+            });
+        }
+        //////////////////////////////
 
         item.value.push({ value, timestamp });
         await item.save();
