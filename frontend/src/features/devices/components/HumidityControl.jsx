@@ -3,16 +3,26 @@ import React, { useEffect, useState } from "react";
 import { FaWind } from "react-icons/fa";
 import { updateHumidity, getHumidity } from "../services/deviceService";
 import socket from "@/socket"
+import AlertMessage from "@/utils/AlertMessage";
+
 
 const HumidityControl = ({ renderScale, token }) => {
   const [humidity, setHumidity] = useState(50);
+  const [warnings, setWarnings] = useState([]);
+  
 
   useEffect(() => {
     const fetchHumidity = async () => {
       try {
         const value = await getHumidity(token);
         setHumidity(value);
-        updateHumidity(value, token);
+        // updateHumidity(value, token);
+        const response = await updateHumidity(value, token);
+        if (response?.warnings?.length > 0) {
+          setWarnings(response.warnings);
+        } else {
+          setWarnings([]);
+        }
       } catch (err) {
         console.error("Failed to fetch humidity:", err);
       }
@@ -21,19 +31,30 @@ const HumidityControl = ({ renderScale, token }) => {
     fetchHumidity();
     // const interval = setInterval(fetchHumidity, 5000);
 
-    const handleRealtimeHumidity = (data) => {
-      if (data && typeof data.value === "number") {
-        setHumidity(data.value);
-        console.log("Real-time humidity received:", data.value);
+    socket.on("humidity:update", (data) => {
+      console.log("Socket received:", data);
+      setHumidity(data.value);
+      if (data.warnings?.length > 0) {
+        setWarnings(data.warnings);
+      } else {
+        setWarnings([]);
       }
-    };
+    });
 
-    socket.on("humidity:update", handleRealtimeHumidity);
+
+    // const handleRealtimeHumidity = (data) => {
+    //   if (data && typeof data.value === "number") {
+    //     setHumidity(data.value);
+    //     console.log("Real-time humidity received:", data.value);
+    //   }
+    // };
+
+    // socket.on("humidity:update", handleRealtimeHumidity);
 
 
     return () => {
       // clearInterval(interval);
-      socket.off("humidity:update", handleRealtimeHumidity);
+      socket.off("humidity:update");
     };
   }, [token]);
   
@@ -55,6 +76,9 @@ const HumidityControl = ({ renderScale, token }) => {
         </div>
       </div>
       <p className="text-xs mt-1 text-gray-400">{humidity}%</p>
+      {warnings.map((warning, index) => (
+        <AlertMessage key={index} alertMsg={warning} />
+      ))}
     </div>
   );
 };

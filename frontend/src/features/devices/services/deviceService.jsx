@@ -7,7 +7,7 @@ const BASE_URL = "http://localhost:5000";
 // Update temperature
 const updateTemperature = async (value, token) => {
   try {
-    await axios.post(
+    const res = await axios.post(
       `${BASE_URL}/api/sensors/temp/update`,
       { value },
       {
@@ -16,6 +16,7 @@ const updateTemperature = async (value, token) => {
         },
       }
     );
+    return res.data;
   } catch (err) {
     console.error("Failed to update temperature:", err);
   }
@@ -24,7 +25,7 @@ const updateTemperature = async (value, token) => {
 // Update humidity
 const updateHumidity = async (value, token) => {
   try {
-    await axios.post(
+    const res = await axios.post(
       `${BASE_URL}/api/sensors/humi/update`,
       { value },
       {
@@ -33,6 +34,7 @@ const updateHumidity = async (value, token) => {
         },
       }
     );
+    return res.data;
   } catch (err) {
     console.error("Failed to update humidity:", err);
   }
