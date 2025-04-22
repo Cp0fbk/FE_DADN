@@ -41,6 +41,11 @@ const updateTempValue = async (req,res) => {
 
         const blynkUrl = process.env.TEMPERATURE_UPDATE + value;
         await axios.get(blynkUrl);
+
+        // Emit sự kiện đến tất cả client
+        const io = req.app.get('socketio');
+        io.emit('temp:update', { value, timestamp });
+
         res.status(200).json({
             success: true,
             message: "updateTempValue success"
@@ -105,6 +110,11 @@ const updateHumiValue = async (req,res) => {
 
         const blynkUrl = process.env.HUMI_UPDATE + value;
         await axios.get(blynkUrl);
+
+        // Emit sự kiện đến tất cả client
+        const io = req.app.get('socketio');
+        io.emit('humidity:update', { value, timestamp });
+
         res.status(200).json({
             success: true,
             messafe: "updateHumiValue success"

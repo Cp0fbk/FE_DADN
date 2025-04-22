@@ -3,6 +3,8 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { FaSnowflake } from "react-icons/fa";
 import { getTemperature, updateTemperature } from "../services/deviceService";
+import socket from "@/socket"
+
 
 const TemperatureControl = ({ renderScale, token }) => {
   const [temperature, setTemperature] = useState(24);
@@ -20,8 +22,29 @@ const TemperatureControl = ({ renderScale, token }) => {
   
     fetchTemperature();
   
-    const interval = setInterval(fetchTemperature, 5000);
-    return () => clearInterval(interval);
+    // const interval = setInterval(fetchTemperature, 5000);
+    // return () => clearInterval(interval);
+
+    socket.on("temp:update", (data) => {
+      console.log("Socket received:", data);
+      setTemperature(data.value);
+    });
+    
+
+    const handleRealtimeTemp = (data) => {
+      if (data && typeof data.value === "number") {
+        setTemperature(data.value);
+        console.log("Real-time temp received:", data.value);
+      }
+    };
+
+    socket.on("temp:update", handleRealtimeTemp);
+
+
+    return () => {
+      // clearInterval(interval);
+      socket.off("temp:update", handleRealtimeTemp);
+    };
   }, [token]);
   
 

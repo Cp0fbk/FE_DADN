@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { FaWind } from "react-icons/fa";
 import { updateHumidity, getHumidity } from "../services/deviceService";
+import socket from "@/socket"
 
 const HumidityControl = ({ renderScale, token }) => {
   const [humidity, setHumidity] = useState(50);
@@ -18,9 +19,22 @@ const HumidityControl = ({ renderScale, token }) => {
     };
   
     fetchHumidity();
-  
-    const interval = setInterval(fetchHumidity, 5000);
-    return () => clearInterval(interval);
+    // const interval = setInterval(fetchHumidity, 5000);
+
+    const handleRealtimeHumidity = (data) => {
+      if (data && typeof data.value === "number") {
+        setHumidity(data.value);
+        console.log("Real-time humidity received:", data.value);
+      }
+    };
+
+    socket.on("humidity:update", handleRealtimeHumidity);
+
+
+    return () => {
+      // clearInterval(interval);
+      socket.off("humidity:update", handleRealtimeHumidity);
+    };
   }, [token]);
   
 
