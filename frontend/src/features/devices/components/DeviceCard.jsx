@@ -7,7 +7,7 @@ import LedControl from "./LedControl";
 import { getLastUsedDevices } from "@/features/devices/services/authService";
 import LoadingAtom from "@/utils/LoadingAtom";
 
-const DeviceCard = ({ icon: Icon, name, description, token }) => {
+const DeviceCard = ({ icon: Icon, name, description, token, setTemperatureWarnings, setHumidityWarnings }) => {
   const [speed, setSpeed] = useState(0);
   const [brightness, setBrightness] = useState(0);
   const [autoMode, setAutoMode] = useState(false);
@@ -75,11 +75,18 @@ const DeviceCard = ({ icon: Icon, name, description, token }) => {
           <FanControl speed={speed} setSpeed={setSpeed} token={token} />
         ))}
       {name === "Temperature" && (
-        <TemperatureControl renderScale={renderScale} token={token} />
+        <TemperatureControl
+          renderScale={renderScale}
+          token={token}
+          setWarnings={setTemperatureWarnings}
+        />
       )}
-
       {name === "Humidity" && (
-        <HumidityControl renderScale={renderScale} token={token} />
+        <HumidityControl
+          renderScale={renderScale}
+          token={token}
+          setWarnings={setHumidityWarnings} // Truyền setHumidityWarnings dưới tên setWarnings
+        />
       )}
       {name === "LED" &&
         (loading ? (
