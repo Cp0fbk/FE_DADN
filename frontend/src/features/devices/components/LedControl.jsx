@@ -59,3 +59,12 @@ const LedControl = ({ brightness, setBrightness, token }) => {
 };
 
 export default LedControl;
+
+
+
+
+
+
+
+
+

@@ -6,6 +6,7 @@ import ActionTimeline from "../../utils/ActionTimeline";
 import { getAllSchedules } from "@/features/devices/services/deviceService";
 import LoadingAtom from "../../utils/LoadingAtom";
 import toast from "react-hot-toast";
+import SelectBox from "@/utils/SelectBox";
 
 export function SetTime() {
   const [devices] = useState(["Fan", "LED"]);
@@ -25,8 +26,7 @@ export function SetTime() {
       setScheduledTimes(data);
     } catch (error) {
       console.error("Error fetching schedules:", error);
-    }
-    finally {
+    } finally {
       setLoading(false);
     }
   };
@@ -34,10 +34,6 @@ export function SetTime() {
   useEffect(() => {
     fetchScheduledTimes();
   }, []);
-
-  const handleDeviceChange = (e) => {
-    setSelectedDevice(e.target.value);
-  };
 
   const handleTimeChange = (e) => {
     const selectedTime = e.target.value;
@@ -61,14 +57,6 @@ export function SetTime() {
     const utcISOString = dayjs(scheduledDate).utc().toISOString();
 
     setTimer(utcISOString);
-  };
-
-  const handleFanValueChange = (e) => {
-    setFanValue(e.target.value);
-  };
-
-  const handleLedValueChange = (e) => {
-    setLedValue(e.target.value);
   };
 
   const handleSetTimer = async () => {
@@ -111,61 +99,41 @@ export function SetTime() {
   };
 
   return (
-    <div className="flex flex-col space-y-6 sm:flex-row sm:space-x-8">
+    <div className="flex flex-col gap-6 sm:flex-row sm:gap-8 flex-wrap">
       {/* Left Side: Device Selection and Timer Setup */}
-      <div className="bg-[#303030] rounded-xl p-4 shadow w-full sm:w-1/2 md:mb-0">
+      <div className="bg-[#303030] rounded-xl p-4 shadow w-full sm:w-[48%]">
         <h2 className="text-xl font-semibold mb-4">Set Device Timer</h2>
         <div className="space-y-4">
-          <div className="flex space-x-4">
-            <div className="flex-1">
-              <label htmlFor="deviceSelect" className="block mb-1">
-                Select Device
-              </label>
-              <select
-                id="deviceSelect"
-                className="w-full p-2 rounded bg-gray-600 text-white border border-white"
-                value={selectedDevice}
-                onChange={handleDeviceChange}
-              >
-                {devices.map((device, index) => (
-                  <option key={index} value={device}>
-                    {device}
-                  </option>
-                ))}
-              </select>
-            </div>
+          <div className="flex flex-col sm:flex-row gap-4">
+            <SelectBox
+              label="Select Device"
+              value={selectedDevice}
+              onChange={setSelectedDevice}
+              options={devices}
+            />
 
             {selectedDevice === "Fan" ? (
               <div className="flex-1">
                 <label htmlFor="fanValue" className="block mb-1">
-                  Set Fan Value (0-255)
+                  Set Fan (0-255)
                 </label>
                 <input
                   type="number"
                   id="fanValue"
-                  className="w-full p-2 rounded bg-gray-600 text-white border border-white"
+                  className="w-full p-1.5 rounded bg-gray-600 text-white border border-white"
                   value={fanValue}
                   min={0}
                   max={255}
-                  onChange={handleFanValueChange}
+                  onChange={(e) => setFanValue(e.target.value)}
                 />
               </div>
             ) : (
-              <div className="flex-1">
-                <label htmlFor="ledValue" className="block mb-1">
-                  Set LED Value
-                </label>
-                <select
-                  id="ledValue"
-                  className="w-full p-2 rounded bg-gray-600 text-white border border-white"
-                  value={ledValue}
-                  onChange={handleLedValueChange}
-                >
-                  <option value="OFF">OFF</option>
-                  <option value="MEDIUM">MEDIUM</option>
-                  <option value="HIGH">HIGH</option>
-                </select>
-              </div>
+              <SelectBox
+                label="Set LED Value"
+                value={ledValue}
+                onChange={setLedValue}
+                options={["OFF", "MEDIUM", "HIGH"]}
+              />
             )}
           </div>
 
@@ -176,14 +144,14 @@ export function SetTime() {
             <input
               type="time"
               id="timerInput"
-              className="w-full p-2 rounded bg-gray-600 text-white border border-white"
+              className="w-full py-2 rounded bg-gray-600 text-white border border-white"
               value={timer ? dayjs(timer).local().format("HH:mm") : ""}
               onChange={handleTimeChange}
             />
           </div>
 
           <button
-            className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded text-white mt-2"
+            className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded text-white mt-2 w-full"
             onClick={handleSetTimer}
           >
             Set Timer
@@ -192,7 +160,7 @@ export function SetTime() {
       </div>
 
       {/* Right Side: Display Scheduled Times */}
-      <div className="bg-[#303030] rounded-xl p-4 shadow w-full sm:w-1/2">
+      <div className="bg-[#303030] rounded-xl p-4 shadow w-full sm:w-[48%]">
         <h2 className="text-xl font-semibold mb-4">Scheduled Times</h2>
         <div className="max-h-[200px] overflow-y-auto scrollbar-hidden">
           {loading ? (
