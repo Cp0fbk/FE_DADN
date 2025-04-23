@@ -31,40 +31,48 @@ const LedControl = ({ brightness, setBrightness, token }) => {
   const brightnessLabel = {
     0: "OFF",
     50: "MEDIUM",
-    100: "HIGH",
     99: "HIGH",
   };
 
+  const levels = [0, 50, 99];
+
+  const getButtonClass = (level) => {
+    if (parseInt(brightness) === level) {
+      switch (level) {
+        case 0:
+          return "bg-gray-400 text-white";
+        case 50:
+          return "bg-yellow-200 text-white";
+        case 99:
+          return "bg-yellow-300 text-white";
+        default:
+          return "bg-white text-gray-700 hover:bg-gray-100";
+      }
+    }
+    return "bg-white text-gray-700 hover:bg-gray-100";
+  };
+
   return (
-    <div>
-      <div className="mt-3">
-        <input
-          type="range"
-          min="0"
-          max="100"
-          step="50"
-          value={brightness}
-          onChange={(e) => {
-            const newBrightness = parseInt(e.target.value);
-            setBrightness(newBrightness);
-          }}
-          className="w-full cursor-pointer"
-        />
-        <p className="text-xs mt-1 text-gray-400">
-          Brightness: {brightnessLabel[brightness]}
-        </p>
+    <div className="mt-2">
+      <div className="inline-flex w-full rounded-lg overflow-hidden border border-gray-300 shadow-sm">
+        {levels.map((level, index) => (
+          <button
+            key={level}
+            onClick={() => setBrightness(level)}
+            className={`flex-1 py-1 text-xs font-medium transition-all duration-150
+              ${getButtonClass(level)}
+              ${index !== levels.length - 1 ? "border-r border-gray-300" : ""}`}
+          >
+            {brightnessLabel[level]}
+          </button>
+        ))}
       </div>
+
+      <p className="text-xs mt-2 text-gray-400">
+        Current: {brightnessLabel[brightness]}
+      </p>
     </div>
   );
 };
 
 export default LedControl;
-
-
-
-
-
-
-
-
-
