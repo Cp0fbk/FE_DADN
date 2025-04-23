@@ -6,7 +6,6 @@ import socket from "@/socket"
 import AlertMessage from "@/utils/AlertMessage";
 
 
-
 const TemperatureControl = ({ renderScale, token }) => {
   const [temperature, setTemperature] = useState(24);
   const [warnings, setWarnings] = useState([]);
@@ -46,17 +45,6 @@ const TemperatureControl = ({ renderScale, token }) => {
       }
     });
     
-
-    // const handleRealtimeTemp = (data) => {
-    //   if (data && typeof data.value === "number") {
-    //     setTemperature(data.value);
-    //     console.log("Real-time temp received:", data.value);
-    //   }
-    // };
-
-    // socket.on("temp:update", handleRealtimeTemp);
-
-
     return () => {
       // clearInterval(interval);
       socket.off("temp:update");
