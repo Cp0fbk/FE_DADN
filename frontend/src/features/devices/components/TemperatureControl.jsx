@@ -1,18 +1,28 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import { FaSnowflake } from "react-icons/fa";
 import { getTemperature, updateTemperature } from "../services/deviceService";
+import socket from "@/socket"
+import AlertMessage from "@/utils/AlertMessage";
+
 
 const TemperatureControl = ({ renderScale, token }) => {
   const [temperature, setTemperature] = useState(24);
+  const [warnings, setWarnings] = useState([]);
+
 
   useEffect(() => {
     const fetchTemperature = async () => {
       try {
         const value = await getTemperature(token);
         setTemperature(value);
-        updateTemperature(value, token);
+        // updateTemperature(value, token);
+        const response = await updateTemperature(value, token);
+        if (response?.warnings?.length > 0) {
+          setWarnings(response.warnings);
+        } else {
+          setWarnings([]);
+        }
       } catch (err) {
         console.error("Failed to fetch temperature:", err);
       }
@@ -20,8 +30,25 @@ const TemperatureControl = ({ renderScale, token }) => {
   
     fetchTemperature();
   
-    const interval = setInterval(fetchTemperature, 5000);
-    return () => clearInterval(interval);
+    // const interval = setInterval(fetchTemperature, 5000);
+    // return () => clearInterval(interval);
+
+
+    //this is both checking and running
+    socket.on("temp:update", (data) => {
+      console.log("Socket received:", data);
+      setTemperature(data.value);
+      if (data.warnings?.length > 0) {
+        setWarnings(data.warnings);
+      } else {
+        setWarnings([]);
+      }
+    });
+    
+    return () => {
+      // clearInterval(interval);
+      socket.off("temp:update");
+    };
   }, [token]);
   
 
@@ -42,6 +69,9 @@ const TemperatureControl = ({ renderScale, token }) => {
         </div>
       </div>
       <p className="text-xs mt-1 text-gray-400">{temperature}°C</p>
+      {warnings.map((warning, index) => (
+        <AlertMessage key={index} alertMsg={warning} />
+      ))}
     </div>
   );
 };

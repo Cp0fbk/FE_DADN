@@ -4,7 +4,7 @@ import FanControl from "./FanControl";
 import TemperatureControl from "./TemperatureControl";
 import HumidityControl from "./HumidityControl";
 import LedControl from "./LedControl";
-import { getLastUsedDevices } from "@/features/auth/services/authService";
+import { getLastUsedDevices } from "@/features/devices/services/authService";
 import LoadingAtom from "@/utils/LoadingAtom";
 
 const DeviceCard = ({ icon: Icon, name, description, token }) => {

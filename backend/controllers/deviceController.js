@@ -3,130 +3,136 @@ require('dotenv').config();
 const axios = require('axios');
 
 const turnONLed_medium = async (req, res) => {
-    console.log("turnONLed")
-    try{
+    console.log("turnONLed_medium")
+    try {
         const userId = req.user._id;
-        console.log(userId)
         const led = await Device.findOne({ owner_id: userId, type: 'led' });
-        console.log(led)
+
         if (!led) {
             return res.status(404).json({ success: false, message: 'LED not found' });
         }
+
         led.current_value = "50";
-        led.history.push({ value: "50", timestamp: new Date() });
+        const timestamp = new Date();
+        led.history.push({ value: "50", timestamp });
         await led.save();
+
         const blynkUrl = process.env.LED + "50";
-        console.log("blynkUrl", blynkUrl)
-        try {
-            await axios.get(blynkUrl);
-            console.log("done"); 
-        } catch (err) {
-            console.error("Error calling Blynk:", err.message);
-            return res.status(500).json({ success: false, message: "Failed to trigger Blynk LED" });
-        }
-        res.status(200).json({
-            success: true,
-            message: "turnONLed success"
-        })
-    }catch(error)
-    {
+        await axios.get(blynkUrl);
+
+        const io = req.app.get('socketio');
+        io.emit('led:update', { value: "50", timestamp });
+
+        res.status(200).json({ success: true, message: "turnONLed success" });
+    } catch (error) {
         res.status(500).json({ success: false, message: error.message });
     }
-}
+};
+
 const turnONLed_max = async (req, res) => {
-    console.log("turnONLed")
-    try{
+    try {
         const userId = req.user._id;
-        console.log(userId)
         const led = await Device.findOne({ owner_id: userId, type: 'led' });
-        console.log(led)
+
         if (!led) {
             return res.status(404).json({ success: false, message: 'LED not found' });
         }
+
         led.current_value = "99";
-        led.history.push({ value: "99", timestamp: new Date() });
+        const timestamp = new Date();
+        led.history.push({ value: "99", timestamp });
         await led.save();
+
         const blynkUrl = process.env.LED + "99";
-        console.log("blynkUrl", blynkUrl)
-        try {
-            await axios.get(blynkUrl);
-            console.log("done"); 
-        } catch (err) {
-            console.error("Error calling Blynk:", err.message);
-            return res.status(500).json({ success: false, message: "Failed to trigger Blynk LED" });
-        }
-        res.status(200).json({
-            success: true,
-            message: "turnONLed success"
-        })
-    }catch(error)
-    {
+        await axios.get(blynkUrl);
+
+        const io = req.app.get('socketio');
+        io.emit('led:update', { value: "99", timestamp });
+
+        res.status(200).json({ success: true, message: "turnONLed success" });
+    } catch (error) {
         res.status(500).json({ success: false, message: error.message });
     }
-}
+};
+
 const turnOFFLed = async (req, res) => {
-    try{
+    try {
         const userId = req.user._id;
         const led = await Device.findOne({ owner_id: userId, type: 'led' });
+
         if (!led) {
             return res.status(404).json({ success: false, message: 'LED not found' });
         }
+
+        const timestamp = new Date();
         led.current_value = "0";
-        led.history.push({ value: "0", timestamp: new Date() });
-        led.save();
+        led.history.push({ value: "0", timestamp });
+        await led.save();
+
         const blynkUrl = process.env.LED + "0";
         await axios.get(blynkUrl);
-        res.status(200).json({
-            success: true,
-            message: "turnOFFLed success"
-        })
-    }catch(error)
-    {
+
+        const io = req.app.get('socketio');
+        io.emit('led:update', { value: "0", timestamp });
+
+        res.status(200).json({ success: true, message: "turnOFFLed success" });
+    } catch (error) {
         res.status(500).json({ success: false, message: error.message });
     }
-}
+};
+
 const turnONAutoLed = async (req, res) => {
-    try{
+    try {
         const userId = req.user._id;
         const autoled = await Device.findOne({ owner_id: userId, type: 'autoled' });
+
         if (!autoled) {
             return res.status(404).json({ success: false, message: 'AUTOLED not found' });
         }
-        autoled.history.push({ value: "on", timestamp: new Date() });
+
+        const timestamp = new Date();
+        autoled.history.push({ value: "on", timestamp });
         autoled.status = "online";
-        autoled.save();
+        await autoled.save();
+
         const blynkUrl = process.env.AUTOLED + "1";
         await axios.get(blynkUrl);
-        res.status(200).json({
-            success: true,
-            message: "turnONAutoLed success"
-        })
-    }catch(error)
-    {
+
+        const io = req.app.get('socketio');
+        io.emit('autoled:update', { value: "on", status: "online", timestamp });
+
+        res.status(200).json({ success: true, message: "turnONAutoLed success" });
+    } catch (error) {
         res.status(500).json({ success: false, message: error.message });
     }
-}
+};
+
 const turnOFFAutoLed = async (req, res) => {
-    try{
+    try {
         const userId = req.user._id;
         const autoled = await Device.findOne({ owner_id: userId, type: 'autoled' });
+
         if (!autoled) {
             return res.status(404).json({ success: false, message: 'AUTOLED not found' });
         }
-        autoled.history.push({ value: "off", timestamp: new Date() });
+
+        const timestamp = new Date();
+        autoled.history.push({ value: "off", timestamp });
         autoled.status = "offline";
-        autoled.save();
+        await autoled.save();
+
         const blynkUrl = process.env.AUTOLED + "0";
         await axios.get(blynkUrl);
-        res.status(200).json({
-            success: true,
-            message: "turnOFFAutoLed success"
-        })
-    }catch(error)
-    {
+
+        const io = req.app.get('socketio');
+        io.emit('autoled:update', { value: "off", status: "offline", timestamp });
+
+        res.status(200).json({ success: true, message: "turnOFFAutoLed success" });
+    } catch (error) {
         res.status(500).json({ success: false, message: error.message });
     }
-}
+};
+
 const turnONMotionMode = async (req, res) => {
     try{
         const userId = req.user._id;
@@ -170,35 +176,40 @@ const turnOFFMotionMode = async (req, res) => {
     }
 }
 
-const fanController = async (req,res) => {
-    
-    console.log("fanController")
-    try{
+const fanController = async (req, res) => {
+    console.log("fanController");
+    try {
         const value = req.params.value;
         const numericValue = parseInt(value, 10);
-        console.log("fan value", value)
+
         if (numericValue < 0 || numericValue > 255) {
             return res.status(400).json({ success: false, message: 'Invalid fan value' });
         }
+
         const userId = req.user._id;
         const fan = await Device.findOne({ owner_id: userId, type: 'fan' });
+
         if (!fan) {
             return res.status(404).json({ success: false, message: 'fan not found' });
         }
-        fan.history.push({ value, timestamp: new Date() });
+
+        const timestamp = new Date();
+        fan.history.push({ value, timestamp });
         fan.current_value = value;
-        fan.save();
+        await fan.save();
+
         const blynkUrl = process.env.FAN + value;
         await axios.get(blynkUrl);
-        res.status(200).json({
-            success: true,
-            message: "fan success"
-        })
-    }catch(error)
-    {
+
+        const io = req.app.get('socketio');
+        io.emit('fan:update', { value, timestamp });
+
+        res.status(200).json({ success: true, message: "fan success" });
+    } catch (error) {
         res.status(500).json({ success: false, message: error.message });
     }
-}
+};
+
 
 const getAllDevicesHistorySorted = async (req, res) => {
     try {

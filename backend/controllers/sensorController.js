@@ -13,14 +13,41 @@ const updateTempValue = async (req,res) => {
         const { value } = req.body;
         const timestamp = new Date();
 
+        ///////////////////////////
+        const MAX_JUMP = 5;
+        const THRESHOLD_TEMP = 35;
+        let warnings = [];
+
+
+        // Kiểm tra nếu vượt ngưỡng
+        if (value > THRESHOLD_TEMP) {
+            warnings.push(`Temperature ${value}°C exceeds the allowed limit (${THRESHOLD_TEMP}°C)`);
+
+        }
+
+        // Kiểm tra thay đổi đột ngột
+        const lastValue = item.value.length > 0 ? item.value[item.value.length - 1].value : null;
+        if (lastValue !== null && Math.abs(value - lastValue) > MAX_JUMP) {
+            warnings.push(`Sudden temperature change detected: from ${lastValue}°C to ${value}°C (maximum allowed change is ${MAX_JUMP}°C)`);
+
+        }
+
+        /////////////////////////
+
         item.value.push({ value, timestamp });
         await item.save();
 
         const blynkUrl = process.env.TEMPERATURE_UPDATE + value;
         await axios.get(blynkUrl);
+
+        // Emit sự kiện đến tất cả client
+        const io = req.app.get('socketio');
+        io.emit('temp:update', { value, timestamp, warnings });
+
         res.status(200).json({
             success: true,
-            message: "updateTempValue success"
+            message: "updateTempValue success",
+            warnings
         })
     }catch(error)
     {
@@ -57,14 +84,36 @@ const updateHumiValue = async (req,res) => {
         const { value } = req.body;
         const timestamp = new Date();
 
+        //////////////////////////////
+        const THRESHOLD_HUMI = 90; 
+        const MAX_JUMP = 10;     
+        let warnings = [];
+  
+
+        if (value > THRESHOLD_HUMI) {
+            warnings.push(`Humidity ${value}% exceeds the allowed limit (${THRESHOLD_HUMI}%)`);
+        }
+
+        const lastValue = item.value.length > 0 ? item.value[item.value.length - 1].value : null;
+        if (lastValue !== null && Math.abs(value - lastValue) > MAX_JUMP) {
+            warnings.push(`Sudden humidity change detected: from ${lastValue}% to ${value}% (maximum allowed change is ${MAX_JUMP}%)`);
+        }
+        //////////////////////////////
+
         item.value.push({ value, timestamp });
         await item.save();
 
         const blynkUrl = process.env.HUMI_UPDATE + value;
         await axios.get(blynkUrl);
+
+        // Emit sự kiện đến tất cả client
+        const io = req.app.get('socketio');
+        io.emit('humidity:update', { value, timestamp, warnings });
+
         res.status(200).json({
             success: true,
-            messafe: "updateHumiValue success"
+            message: "updateHumiValue success",
+            warnings
         })
     }catch(error)
     {

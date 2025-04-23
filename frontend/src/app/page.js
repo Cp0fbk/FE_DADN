@@ -7,7 +7,7 @@ import { FaFacebook, FaApple } from "react-icons/fa";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import toast from "react-hot-toast";
-import { login } from "@/features/auth/services/authService";
+import { login } from "@/features/devices/services/authService";
 
 export default function Home() {
   const [isOpen, setIsOpen] = useState(false);
