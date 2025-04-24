@@ -2,21 +2,16 @@
 import React, { useEffect, useState } from "react";
 import { FaSnowflake } from "react-icons/fa";
 import { getTemperature, updateTemperature } from "../services/deviceService";
-import socket from "@/socket"
-import AlertMessage from "@/utils/AlertMessage";
+import socket from "@/socket";
 
-
-const TemperatureControl = ({ renderScale, token }) => {
+const TemperatureControl = ({ renderScale, token, setWarnings }) => {
   const [temperature, setTemperature] = useState(24);
-  const [warnings, setWarnings] = useState([]);
-
 
   useEffect(() => {
     const fetchTemperature = async () => {
       try {
         const value = await getTemperature(token);
         setTemperature(value);
-        // updateTemperature(value, token);
         const response = await updateTemperature(value, token);
         if (response?.warnings?.length > 0) {
           setWarnings(response.warnings);
@@ -30,11 +25,6 @@ const TemperatureControl = ({ renderScale, token }) => {
   
     fetchTemperature();
   
-    // const interval = setInterval(fetchTemperature, 5000);
-    // return () => clearInterval(interval);
-
-
-    //this is both checking and running
     socket.on("temp:update", (data) => {
       console.log("Socket received:", data);
       setTemperature(data.value);
@@ -46,11 +36,9 @@ const TemperatureControl = ({ renderScale, token }) => {
     });
     
     return () => {
-      // clearInterval(interval);
       socket.off("temp:update");
     };
-  }, [token]);
-  
+  }, [token, setWarnings]);
 
   return (
     <div className="mt-4">
@@ -69,9 +57,6 @@ const TemperatureControl = ({ renderScale, token }) => {
         </div>
       </div>
       <p className="text-xs mt-1 text-gray-400">{temperature}°C</p>
-      {warnings.map((warning, index) => (
-        <AlertMessage key={index} alertMsg={warning} />
-      ))}
     </div>
   );
 };

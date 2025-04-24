@@ -37,3 +37,25 @@ export const getLastUsedDevices = async (token) => {
     );
   }
 };
+
+
+
+
+export const changePassword = async (token, oldPassword, newPassword) => {
+  try {
+    const response = await axios.put(
+      `${API_BASE_URL}/auth/change-password`,
+      { oldPassword, newPassword },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || { message: "Password change failed" };
+  }
+};
+
+

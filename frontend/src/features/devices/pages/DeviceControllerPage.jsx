@@ -1,7 +1,6 @@
 "use client";
 import Image from "next/image";
-import React from "react";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
   FaThermometerHalf,
@@ -16,6 +15,8 @@ import { MotionControl } from "../components/MotionControl";
 import { SetTime } from "../../../components/forms/SetTime";
 import ProtectedRoute from "../../auth/components/ProtectedRoute";
 import Footer from "../../../components/layout/Footer";
+import AlertMessage from "@/utils/AlertMessage";
+import styles from "../styles/CustomScrollbar.module.css"; // Import CSS module
 
 const deviceList = [
   {
@@ -44,6 +45,8 @@ export default function DeviceController() {
   const [token, setToken] = useState(null);
   const [time, setTime] = useState(null);
   const [isClient, setIsClient] = useState(false);
+  const [temperatureWarnings, setTemperatureWarnings] = useState([]);
+  const [humidityWarnings, setHumidityWarnings] = useState([]);
   const router = useRouter();
 
   useEffect(() => {
@@ -72,10 +75,7 @@ export default function DeviceController() {
     <ProtectedRoute>
       <Header />
       <div className="min-h-screen bg-[#212121] text-white flex flex-col">
-        {/* Sidebar Navigation */}
-
         <div className=" flex-1 p-6 md:mt-0">
-          {/* hình ảnh + thời gian */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <div className="relative rounded-xl overflow-hidden bg-[#0a0c2c]">
               <Image
@@ -85,8 +85,6 @@ export default function DeviceController() {
                 height={500}
                 className="w-full object-cover"
               />
-
-              {/* Block time */}
               {isClient && time && (
                 <div className="absolute top-4 right-4 bg-black/30 backdrop-blur-md px-4 py-2 rounded-xl shadow text-right text-white text-sm">
                   <div className="flex items-center justify-end gap-2">
@@ -110,8 +108,6 @@ export default function DeviceController() {
                 </div>
               )}
             </div>
-
-            {/* Danh sách device */}
             <div className="grid grid-cols-2 gap-6 sm:grid-cols-2 lg:grid-cols-2">
               {deviceList.map((device, index) => (
                 <DeviceCard
@@ -120,16 +116,35 @@ export default function DeviceController() {
                   name={device.name}
                   description={device.description}
                   token={token}
+                  setTemperatureWarnings={
+                    device.name === "Temperature" ? setTemperatureWarnings : undefined
+                  }
+                  setHumidityWarnings={
+                    device.name === "Humidity" ? setHumidityWarnings : undefined
+                  }
                 />
               ))}
             </div>
           </div>
-          {/* Khung hẹn giờ và cảm biến cửa */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-6 mb-10 md:mb-0">
             <div className="col-span-1 sm:col-span-2 lg:col-span-2">
               <SetTime />
             </div>
-            <div className="col-span-1 sm:col-span-2 lg:col-span-1">
+            <div className="col-span-1 sm:col-span-2 lg:col-span-1 flex flex-col gap-5">
+              
+              <div className="bg-[#2a2a2a] rounded-xl p-4">
+                <h3 className="text-lg font-semibold mb-2">Warnings</h3>
+                <div className={`max-h-30 overflow-y-auto ${styles.customScrollbar}`}>
+                  {temperatureWarnings.concat(humidityWarnings).length > 0 ? (
+                    temperatureWarnings.concat(humidityWarnings).map((warning, index) => (
+                      <AlertMessage key={index} alertMsg={warning} />
+                    ))
+                  ) : (
+                    <p className="text-gray-400 text-sm">No warnings at the moment.</p>
+                  )}
+                </div>
+              </div>
+
               <MotionControl token={token} />
             </div>
           </div>
