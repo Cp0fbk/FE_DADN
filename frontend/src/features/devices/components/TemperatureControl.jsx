@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { FaSnowflake } from "react-icons/fa";
-import { getTemperature, updateTemperature } from "../services/deviceService";
+import { getTemperature, updateTemperature } from "../../../services/deviceService";
 import socket from "@/socket";
 
 const TemperatureControl = ({ renderScale, token, setWarnings }) => {

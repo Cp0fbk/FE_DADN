@@ -12,7 +12,7 @@ import {
   ResponsiveContainer,
   Legend,
 } from "recharts";
-import { fetchHumidityData, fetchTemperatureData } from "@/features/devices/services/deviceService";
+import { fetchHumidityData, fetchTemperatureData } from "@/services/deviceService";
 import ProtectedRoute from "../../auth/components/ProtectedRoute";
 import { useRouter } from "next/navigation";
 import LoadingAtom from "../../../utils/LoadingAtom";

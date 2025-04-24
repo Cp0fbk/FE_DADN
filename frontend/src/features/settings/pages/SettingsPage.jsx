@@ -1,9 +1,9 @@
 "use client";
 import React, { useState } from "react";
 import Header from "@/components/layout/Header";
-import ActivityLog from "@/components/common/ActivityLog";
-import ProfileForm from "@/components/forms/ProfileForm";
-import { ContactBox, MobileContactPopup } from "@/components/common/Contact";
+import ActivityLog from "./ActivityLog";
+import ProfileForm from "@/features/settings/pages/ProfileForm";
+import { ContactBox, MobileContactPopup } from "@/features/settings/pages/Contact";
 import { FaHeadset } from "react-icons/fa";
 import ProtectedRoute from "@/features/auth/components/ProtectedRoute";
 import Footer from "@/components/layout/Footer";

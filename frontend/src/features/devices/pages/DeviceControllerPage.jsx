@@ -12,7 +12,7 @@ import { PiFanFill } from "react-icons/pi";
 import DeviceCard from "../components/DeviceCard";
 import Header from "../../../components/layout/Header";
 import { MotionControl } from "../components/MotionControl";
-import { SetTime } from "../../../components/forms/SetTime";
+import { SetTime } from "../components/SetTime";
 import ProtectedRoute from "../../auth/components/ProtectedRoute";
 import Footer from "../../../components/layout/Footer";
 import AlertMessage from "@/utils/AlertMessage";

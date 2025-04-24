@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { FaWind } from "react-icons/fa";
-import { updateHumidity, getHumidity } from "../services/deviceService";
+import { updateHumidity, getHumidity } from "../../../services/deviceService";
 import socket from "@/socket";
 
 const HumidityControl = ({ renderScale, token, setWarnings }) => {

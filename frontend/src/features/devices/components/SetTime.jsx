@@ -2,9 +2,9 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
-import ActionTimeline from "../../utils/ActionTimeline";
-import { getAllSchedules } from "@/features/devices/services/deviceService";
-import LoadingAtom from "../../utils/LoadingAtom";
+import ActionTimeline from "@/utils/ActionTimeline";
+import { getAllSchedules } from "@/services/deviceService";
+import LoadingAtom from "@/utils/LoadingAtom";
 import toast from "react-hot-toast";
 import SelectBox from "@/utils/SelectBox";
 

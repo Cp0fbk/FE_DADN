@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect } from "react";
-import { controlLEDBrightness } from "../services/deviceService";
+import { controlLEDBrightness } from "../../../services/deviceService";
 import socket from "@/socket"; // giống như bạn làm ở TemperatureControl
 
 const LedControl = ({ brightness, setBrightness, token }) => {
@@ -49,7 +49,7 @@ const LedControl = ({ brightness, setBrightness, token }) => {
           return "bg-white text-gray-700 hover:bg-gray-100";
       }
     }
-    return "bg-white text-gray-700 hover:bg-gray-100";
+    return "bg-white text-gray-700 hover:bg-gray-100 cursor-pointer";
   };
 
   return (
