@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { FaHistory } from "react-icons/fa";
-import LoadingAtom from "../../utils/LoadingAtom";
-import { getDeviceHistoryLogs } from "@/features/devices/services/deviceService";
+import LoadingAtom from "@/utils/LoadingAtom";
+import { getDeviceHistoryLogs } from "@/services/deviceService";
 
 const formatDate = (isoString) => {
   const date = new Date(isoString);

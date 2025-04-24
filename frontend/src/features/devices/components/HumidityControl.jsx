@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { FaWind } from "react-icons/fa";
-import { updateHumidity, getHumidity } from "../services/deviceService";
+import { updateHumidity, getHumidity } from "../../../services/deviceService";
 import socket from "@/socket";
 
 const HumidityControl = ({ renderScale, token, setWarnings }) => {
@@ -24,20 +24,22 @@ const HumidityControl = ({ renderScale, token, setWarnings }) => {
     };
   
     fetchHumidity();
+    const interval = setInterval(fetchHumidity, 5000);
+    return () => clearInterval(interval);
 
-    socket.on("humidity:update", (data) => {
-      console.log("Socket received:", data);
-      setHumidity(data.value);
-      if (data.warnings?.length > 0) {
-        setWarnings(data.warnings);
-      } else {
-        setWarnings([]);
-      }
-    });
+    // socket.on("humidity:update", (data) => {
+    //   console.log("Socket received:", data);
+    //   setHumidity(data.value);
+    //   if (data.warnings?.length > 0) {
+    //     setWarnings(data.warnings);
+    //   } else {
+    //     setWarnings([]);
+    //   }
+    // });
 
-    return () => {
-      socket.off("humidity:update");
-    };
+    // return () => {
+    //   socket.off("humidity:update");
+    // };
   }, [token, setWarnings]);
 
   return (

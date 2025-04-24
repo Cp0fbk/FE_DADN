@@ -1,9 +1,9 @@
 "use client";
 import { useState, useEffect } from "react";
 import { FaDoorOpen } from "react-icons/fa";
-import { turnOnMotionMode, turnOffMotionMode } from "../services/deviceService";
+import { turnOnMotionMode, turnOffMotionMode } from "../../../services/deviceService";
 import toast from "react-hot-toast";
-import PowerSwitch from "./PowerSwitch";
+import PowerSwitch from "../../../utils/PowerSwitch";
 
 export function MotionControl({ token }) {
   const [motionStatus, setMotionStatus] = useState("offline");

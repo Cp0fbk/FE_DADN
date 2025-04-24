@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { FaSnowflake } from "react-icons/fa";
-import { getTemperature, updateTemperature } from "../services/deviceService";
+import { getTemperature, updateTemperature } from "../../../services/deviceService";
 import socket from "@/socket";
 
 const TemperatureControl = ({ renderScale, token, setWarnings }) => {
@@ -24,20 +24,22 @@ const TemperatureControl = ({ renderScale, token, setWarnings }) => {
     };
   
     fetchTemperature();
+    const interval = setInterval(fetchTemperature, 5000);
+    return () => clearInterval(interval);
   
-    socket.on("temp:update", (data) => {
-      console.log("Socket received:", data);
-      setTemperature(data.value);
-      if (data.warnings?.length > 0) {
-        setWarnings(data.warnings);
-      } else {
-        setWarnings([]);
-      }
-    });
+    // socket.on("temp:update", (data) => {
+    //   console.log("Socket received:", data);
+    //   setTemperature(data.value);
+    //   if (data.warnings?.length > 0) {
+    //     setWarnings(data.warnings);
+    //   } else {
+    //     setWarnings([]);
+    //   }
+    // });
     
-    return () => {
-      socket.off("temp:update");
-    };
+    // return () => {
+    //   socket.off("temp:update");
+    // };
   }, [token, setWarnings]);
 
   return (

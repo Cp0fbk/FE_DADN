@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { FaPen } from "react-icons/fa";
-import { getUserProfile } from "@/features/devices/services/deviceService";
-import { changePassword } from "@/features/devices/services/authService";
+import { getUserProfile } from "@/services/deviceService";
+import { changePassword } from "@/services/authService";
 
 
 export default function ProfileForm() {

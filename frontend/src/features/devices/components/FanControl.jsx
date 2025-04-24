@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect } from "react";
-import { setFanSpeed } from "../services/deviceService";
+import { setFanSpeed } from "../../../services/deviceService";
 import socket from "@/socket"; // Giả sử socket đã được cấu hình ở đây
 
 const FanControl = ({ speed, setSpeed, token }) => {

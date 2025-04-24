@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
-import { registerUser } from "../../devices/services/authService";
+import { registerUser } from "../../../services/authService";
 
 export default function SignUp() {
   const router = useRouter();
